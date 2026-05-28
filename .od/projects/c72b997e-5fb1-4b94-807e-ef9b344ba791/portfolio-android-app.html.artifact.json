@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Portfolio — Android App Prototype",
+  "entry": "portfolio-android-app.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-05-18T20:33:46.573Z",
+  "updatedAt": "2026-05-18T20:33:46.597Z",
+  "metadata": {
+    "identifier": "portfolio-android-app",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

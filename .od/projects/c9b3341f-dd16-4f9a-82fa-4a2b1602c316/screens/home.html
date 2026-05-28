@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Home — Fitness</title>
+  <link rel="stylesheet" href="../tokens.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+    }
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 20px 8px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .status-bar .time { font-weight: 700; }
+    .status-icons { display: flex; gap: 6px; align-items: center; }
+    .status-icons svg { width: 16px; height: 16px; fill: var(--fg); }
+
+    .app-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-bar h1 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--border);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .greeting {
+      padding: 28px 20px 24px;
+    }
+    .greeting .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .greeting h2 {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--fg);
+    }
+
+    .rings-card {
+      margin: 0 20px 28px;
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .rings-visual {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .rings-visual svg { width: 100px; height: 100px; transform: rotate(-90deg); }
+    .rings-visual .center-label {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .rings-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rings-meta .stat-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .rings-meta .stat-row .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .rings-meta .stat-row .num {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .rings-meta .stat-row .label {
+      color: var(--muted);
+    }
+    .rings-meta .stat-row .goal {
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      padding: 0 20px;
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin: 0 20px 28px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .stat-cell {
+      padding: 20px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-cell:nth-child(2n) { border-right: none; }
+    .stat-cell:nth-last-child(-n+2) { border-bottom: none; }
+    .stat-cell .value {
+      font-family: var(--font-display);
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+    .stat-cell .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .suggested-card {
+      margin: 0 20px 28px;
+      padding: 20px;
+      background: var(--fg);
+      color: var(--surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .suggested-card .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: oklch(60% 0.01 70);
+      margin-bottom: 6px;
+    }
+    .suggested-card h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 400;
+    }
+    .suggested-card .duration {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: oklch(60% 0.01 70);
+      margin-top: 4px;
+    }
+    .suggested-card .arrow {
+      font-size: 24px;
+      color: var(--muted);
+      font-family: var(--font-display);
+    }
+
+    .streak-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 20px;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+    .streak-row .fire {
+      font-size: 18px;
+    }
+    .streak-row .num {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .spacer { flex: 1; }
+
+    .bottom-nav {
+      display: flex;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 6px 0 18px;
+      position: sticky;
+      bottom: 0;
+    }
+    .bottom-nav a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 10px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 0;
+    }
+    .bottom-nav a.active { color: var(--fg); }
+    .bottom-nav a svg {
+      width: 22px; height: 22px;
+      fill: currentColor;
+    }
+    .bottom-nav a.active svg {
+      fill: var(--accent);
+    }
+
+    .home-indicator {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      padding: 8px 0 12px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .home-indicator .bar {
+      width: 120px;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--fg);
+      opacity: 0.25;
+    }
+  </style>
+</head>
+<body>
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <div class="app-bar">
+    <h1>Fitness</h1>
+    <div class="avatar">AC</div>
+  </div>
+
+  <div class="greeting">
+    <div class="eyebrow">Monday, 18 May</div>
+    <h2>Good morning,<br>Alex</h2>
+  </div>
+
+  <div class="rings-card">
+    <div class="rings-visual">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border)" stroke-width="6"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="var(--accent)" stroke-width="6" stroke-dasharray="264 264" stroke-dashoffset="66" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="var(--border)" stroke-width="6"/>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="oklch(58% 0.08 180)" stroke-width="6" stroke-dasharray="201 201" stroke-dashoffset="40" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="22" fill="none" stroke="var(--border)" stroke-width="6"/>
+        <circle cx="50" cy="50" r="22" fill="none" stroke="oklch(65% 0.12 80)" stroke-width="6" stroke-dasharray="138 138" stroke-dashoffset="90" stroke-linecap="round"/>
+      </svg>
+      <div class="center-label">Active</div>
+    </div>
+    <div class="rings-meta">
+      <div class="stat-row">
+        <span class="dot" style="background:var(--accent)"></span>
+        <span class="num">534</span>
+        <span class="label">Move</span>
+        <span class="goal">/ 600 cal</span>
+      </div>
+      <div class="stat-row">
+        <span class="dot" style="background:oklch(58% 0.08 180)"></span>
+        <span class="num">28</span>
+        <span class="label">Exercise</span>
+        <span class="goal">/ 30 min</span>
+      </div>
+      <div class="stat-row">
+        <span class="dot" style="background:oklch(65% 0.12 80)"></span>
+        <span class="num">8</span>
+        <span class="label">Stand</span>
+        <span class="goal">/ 12 hr</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Today's Summary</div>
+  <div class="stats-grid">
+    <div class="stat-cell">
+      <div class="value">8,742</div>
+      <div class="sub">Steps</div>
+    </div>
+    <div class="stat-cell">
+      <div class="value">1.8 L</div>
+      <div class="sub">Water</div>
+    </div>
+    <div class="stat-cell">
+      <div class="value">1,846</div>
+      <div class="sub">Calories</div>
+    </div>
+    <div class="stat-cell">
+      <div class="value">6.2 km</div>
+      <div class="sub">Distance</div>
+    </div>
+  </div>
+
+  <div class="suggested-card">
+    <div>
+      <div class="eyebrow">Suggested</div>
+      <h3>Morning Mobility</h3>
+      <div class="duration">15 min · Bodyweight</div>
+    </div>
+    <div class="arrow">→</div>
+  </div>
+
+  <div class="streak-row">
+    <span class="fire">🔥</span>
+    <span class="num">14</span>
+    <span>day streak</span>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="home.html" class="active">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Home
+    </a>
+    <a href="workout.html">
+      <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg>
+      Workout
+    </a>
+    <a href="progress.html">
+      <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/><path fill="none" d="M0 0h24v24H0z"/></svg>
+      Progress
+    </a>
+    <a href="nutrition.html">
+      <svg viewBox="0 0 24 24"><path d="M18 18.5c.83 0 1.5-.67 1.5-1.5 0-3.31-2.69-6-6-6-2.21 0-4.15 1.2-5.18 2.97l-3.39-3.39c.07-.08.15-.15.23-.22l3.09-3.07c.24-.24.56-.37.88-.37.32 0 .64.13.88.37l.71.71c.78.78 2.05.78 2.83 0 .78-.78.78-2.05 0-2.83l-.71-.71c-.49-.49-1.13-.73-1.77-.73-.64 0-1.28.24-1.77.73L5.91 8.23c-.09.09-.18.18-.26.28L2 12.77c-.39.39-.39 1.02 0 1.41l1.41 1.41c.39.39 1.02.39 1.41 0l.71-.71c.49-.49 1.13-.73 1.77-.73.64 0 1.28.24 1.77.73l.71.71c.78.78 2.05.78 2.83 0 .78-.78.78-2.05 0-2.83l-.71-.71c-.49-.49-1.13-.73-1.77-.73-.18 0-.36.02-.53.06L9.3 8.5c.72-.1 1.46-.02 2.15.25l3.39 3.39c-.38.49-.61 1.09-.61 1.75 0 .02.01.04.01.06H14v2h.01c.01.83.67 1.5 1.5 1.5 0 1.1.9 2 2 2s2-.9 2-2c0-.83-.67-1.5-1.5-1.5z"/></svg>
+      Nutrition
+    </a>
+    <a href="profile.html">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      Profile
+    </a>
+  </div>
+  <div class="home-indicator"><div class="bar"></div></div>
+</body>
+</html>

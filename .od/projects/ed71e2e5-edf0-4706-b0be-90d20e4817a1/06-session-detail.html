@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Versatile — Detalle de Sesión</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="iphone-frame">
+    <div class="status-bar">
+      <span class="time">10:41</span>
+      <span class="icons">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="20" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="21" y="4" width="2" height="4" rx="1"/><rect x="2" y="3" width="14" height="6" rx="1" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <div class="screen-content" style="padding-bottom: 40px;">
+      <!-- Header -->
+      <div class="session-detail-header">
+        <div class="session-detail-back" onclick="window.location.href='05-history.html'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>
+        </div>
+        <div class="session-detail-title">Detalle de Sesión</div>
+        <div class="session-detail-date">lunes, 18 de mayo de 2026</div>
+      </div>
+
+      <!-- Summary -->
+      <div class="card session-summary">
+        <div class="session-summary-stat">
+          <div class="session-summary-label">Duración</div>
+          <div class="session-summary-value">74<span class="session-summary-unit">min</span></div>
+        </div>
+        <div class="session-summary-stat">
+          <div class="session-summary-label">Volumen Total</div>
+          <div class="session-summary-value">5915<span class="session-summary-unit">kg</span></div>
+        </div>
+        <div class="session-summary-stat">
+          <div class="session-summary-label">Ejercicios</div>
+          <div class="session-summary-value">6</div>
+        </div>
+      </div>
+
+      <!-- Exercises -->
+      <div style="padding: 0 20px; margin-bottom: 16px;">
+        <div class="body-sm text-muted" style="text-transform:uppercase; letter-spacing:0.06em;">Ejercicios Realizados</div>
+      </div>
+
+      <!-- Hack Squat -->
+      <div class="card exercise-set">
+        <div class="exercise-set-header">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary)" stroke-width="1.5"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></svg>
+            </div>
+            <div>
+              <div class="exercise-set-name">Hack Squat</div>
+              <div class="exercise-set-muscle">Cuádriceps</div>
+            </div>
+          </div>
+          <button class="btn-icon" style="width:36px;height:36px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          </button>
+        </div>
+        <div class="sets-table">
+          <div class="sets-row header">
+            <span>Serie</span><span>Peso</span><span>Reps</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">1</span><span>55 kg</span><span>11</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">2</span><span>55 kg</span><span>8</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">3</span><span>55 kg</span><span>7</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quadriceps Extension -->
+      <div class="card exercise-set">
+        <div class="exercise-set-header">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary)" stroke-width="1.5"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></svg>
+            </div>
+            <div>
+              <div class="exercise-set-name">Quadriceps Extension</div>
+              <div class="exercise-set-muscle">Cuádriceps</div>
+            </div>
+          </div>
+          <button class="btn-icon" style="width:36px;height:36px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          </button>
+        </div>
+        <div class="sets-table">
+          <div class="sets-row header">
+            <span>Serie</span><span>Peso</span><span>Reps</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">1</span><span>25 kg</span><span>13</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">2</span><span>30 kg</span><span>8</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">3</span><span>30 kg</span><span>7</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Femoral Curl -->
+      <div class="card exercise-set">
+        <div class="exercise-set-header">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg-secondary)" stroke-width="1.5"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></svg>
+            </div>
+            <div>
+              <div class="exercise-set-name">Femoral Curl</div>
+              <div class="exercise-set-muscle">Isquiotibiales</div>
+            </div>
+          </div>
+          <button class="btn-icon" style="width:36px;height:36px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          </button>
+        </div>
+        <div class="sets-table">
+          <div class="sets-row header">
+            <span>Serie</span><span>Peso</span><span>Reps</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">1</span><span>40 kg</span><span>12</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">2</span><span>45 kg</span><span>10</span>
+          </div>
+          <div class="sets-row">
+            <span class="set-num">3</span><span>45 kg</span><span>8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-indicator"></div>
+  </div>
+</body>
+</html>

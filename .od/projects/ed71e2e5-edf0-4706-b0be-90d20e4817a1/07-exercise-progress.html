@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Versatile — Hack Squat Progresión</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .progress-chart-area {
+      height: 180px;
+      position: relative;
+      margin-top: 16px;
+    }
+    .chart-grid-line {
+      position: absolute;
+      left: 40px;
+      right: 0;
+      height: 1px;
+      background: var(--border);
+    }
+    .chart-y-label {
+      position: absolute;
+      left: 0;
+      width: 36px;
+      text-align: right;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .chart-x-label {
+      position: absolute;
+      bottom: 0;
+      font-size: 11px;
+      color: var(--muted);
+      transform: translateX(-50%);
+    }
+    .chart-line-svg {
+      position: absolute;
+      left: 40px;
+      right: 0;
+      top: 0;
+      bottom: 30px;
+    }
+    .pr-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 4px 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+    .chart-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="iphone-frame">
+    <div class="status-bar">
+      <span class="time">10:41</span>
+      <span class="icons">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="20" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="21" y="4" width="2" height="4" rx="1"/><rect x="2" y="3" width="14" height="6" rx="1" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <div class="screen-content" style="padding-bottom: 40px;">
+      <!-- Header -->
+      <div class="progress-header">
+        <div class="session-detail-back" onclick="window.location.href='06-session-detail.html'" style="margin-bottom:16px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>
+        </div>
+        <div class="progress-title">Hack Squat</div>
+        <div class="progress-muscle">Cuádriceps</div>
+      </div>
+
+      <!-- Exercise Header -->
+      <div style="padding: 0 20px; margin-bottom: 16px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:24px;"></div>
+          <div>
+            <div style="font-size:18px;font-weight:600;">Hack Squat</div>
+            <div style="font-size:13px;color:var(--muted);"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:6px;"></span>Cuádriceps</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div style="padding: 0 20px; margin-bottom: 16px;">
+        <div style="display:flex; background:var(--bg-elevated); border-radius:12px; padding:4px; border:1px solid var(--border);">
+          <button style="flex:1;padding:10px;border-radius:8px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;border:none;">1RM Est.</button>
+          <button style="flex:1;padding:10px;border-radius:8px;background:transparent;color:var(--muted);font-size:14px;font-weight:500;border:none;">Volumen</button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="progress-stats">
+        <div class="card progress-stat-card">
+          <div class="progress-stat-label">Ant.</div>
+          <div class="progress-stat-value">75.2</div>
+          <div class="progress-stat-change positive">↑ +5.5 +7.9%</div>
+        </div>
+        <div class="card progress-stat-card">
+          <div class="progress-stat-label">Récord</div>
+          <div class="progress-stat-value">75.2<span class="progress-stat-unit">kg</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">18/05</div>
+        </div>
+        <div class="card progress-stat-card">
+          <div class="progress-stat-label">Promedio</div>
+          <div class="progress-stat-value">70.0</div>
+          <div style="height:30px;margin-top:8px;">
+            <svg width="100%" height="30" viewBox="0 0 120 30">
+              <path d="M0,25 Q30,20 60,18 T120,15" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.5"/>
+              <path d="M0,25 Q30,20 60,18 T120,15 L120,30 L0,30 Z" fill="url(#grad1)" opacity="0.3"/>
+              <defs><linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs>
+            </svg>
+          </div>
+        </div>
+        <div class="card progress-stat-card">
+          <div class="progress-stat-label">Sesiones</div>
+          <div class="progress-stat-value">4</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">4 sesiones</div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="card progress-chart">
+        <div class="progress-chart-header">
+          <div class="progress-chart-title">Progresión</div>
+          <div class="progress-chart-tabs">
+            <button class="progress-chart-tab">1M</button>
+            <button class="progress-chart-tab active">3M</button>
+            <button class="progress-chart-tab">6M</button>
+            <button class="progress-chart-tab">1A</button>
+            <button class="progress-chart-tab">Todo</button>
+          </div>
+        </div>
+        <div class="progress-chart-area">
+          <!-- Y Axis -->
+          <div class="chart-y-label" style="top:0;">75 kg</div>
+          <div class="chart-y-label" style="top:33%;">72 kg</div>
+          <div class="chart-y-label" style="top:66%;">69 kg</div>
+          <div class="chart-y-label" style="top:100%;">66 kg</div>
+
+          <!-- Grid Lines -->
+          <div class="chart-grid-line" style="top:0;"></div>
+          <div class="chart-grid-line" style="top:33%;"></div>
+          <div class="chart-grid-line" style="top:66%;"></div>
+          <div class="chart-grid-line" style="top:100%;"></div>
+
+          <!-- SVG Chart -->
+          <svg class="chart-line-svg" viewBox="0 0 300 150" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- Area fill -->
+            <path d="M10,130 L80,80 L160,85 L240,30 L290,10 L290,150 L10,150 Z" fill="url(#chartGrad)"/>
+            <!-- Line -->
+            <path d="M10,130 L80,80 L160,85 L240,30 L290,10" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Dots -->
+            <circle cx="10" cy="130" r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+            <circle cx="80" cy="80" r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+            <circle cx="160" cy="85" r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+            <circle cx="240" cy="30" r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+            <circle cx="290" cy="10" r="6" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+          </svg>
+
+          <!-- PR Badge -->
+          <div class="pr-badge">PR</div>
+
+          <!-- X Axis Labels -->
+          <div class="chart-x-label" style="left:10px;">May 4</div>
+          <div class="chart-x-label" style="left:80px;">May 11</div>
+          <div class="chart-x-label" style="left:160px;">May 15</div>
+          <div class="chart-x-label" style="left:290px;">May 18</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-indicator"></div>
+  </div>
+</body>
+</html>

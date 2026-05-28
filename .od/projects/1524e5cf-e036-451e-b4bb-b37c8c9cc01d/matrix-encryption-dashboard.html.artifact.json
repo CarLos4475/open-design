@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Sistema de Cifrado Matricial",
+  "entry": "matrix-encryption-dashboard.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-05-19T20:56:14.624Z",
+  "updatedAt": "2026-05-19T20:56:14.629Z",
+  "metadata": {
+    "identifier": "matrix-encryption-dashboard",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

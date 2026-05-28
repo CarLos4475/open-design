@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Code Stone — Sports Software Development</title>
+  <style>
+    /* ===========================================================
+       Swiss International — Code Stone Landing Page
+       16-column grid, Klein Blue accent, geometric precision
+       =========================================================== */
+    :root {
+      --klein: oklch(35% 0.22 265);
+      --klein-light: oklch(45% 0.18 265);
+      --klein-pale: oklch(92% 0.02 265);
+      --bg: oklch(99% 0.002 265);
+      --surface: oklch(100% 0 0);
+      --fg: oklch(15% 0.015 265);
+      --muted: oklch(50% 0.015 265);
+      --border: oklch(90% 0.008 265);
+
+      --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-mono: 'SF Mono', 'IBM Plex Mono', ui-monospace, monospace;
+
+      --grid-cols: 16;
+      --gutter: 20px;
+      --margin: clamp(24px, 5vw, 80px);
+      --section-pad: clamp(64px, 10vw, 140px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* 16-column grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: var(--gutter);
+      padding: 0 var(--margin);
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Typography */
+    .display-xl {
+      font: 800 clamp(48px, 7vw, 110px)/0.92 var(--font-display);
+      letter-spacing: -0.035em;
+    }
+    .display-lg {
+      font: 700 clamp(36px, 4.5vw, 72px)/1 var(--font-display);
+      letter-spacing: -0.025em;
+    }
+    .display-md {
+      font: 700 clamp(28px, 3vw, 48px)/1.05 var(--font-display);
+      letter-spacing: -0.02em;
+    }
+    .display-sm {
+      font: 600 clamp(22px, 2.2vw, 32px)/1.15 var(--font-display);
+      letter-spacing: -0.015em;
+    }
+    .body-lg {
+      font: 400 clamp(18px, 1.6vw, 24px)/1.5 var(--font-body);
+      color: var(--fg);
+    }
+    .body-md {
+      font: 400 clamp(15px, 1.2vw, 18px)/1.6 var(--font-body);
+      color: var(--muted);
+    }
+    .label {
+      font: 600 12px/1 var(--font-mono);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--klein);
+    }
+    .accent { color: var(--klein); }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: transparent;
+      transition: background 0.3s, border-color 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(252, 252, 253, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--border);
+    }
+    .nav.scrolled .nav-logo { color: var(--fg); }
+    .nav.scrolled .nav-links a { color: var(--muted); }
+    .nav.scrolled .nav-toggle span { background: var(--fg); }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px var(--margin);
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .nav-logo {
+      font: 800 20px/1 var(--font-display);
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-logo span { color: rgba(255,255,255,0.6); transition: color 0.3s; }
+    .nav.scrolled .nav-logo span { color: var(--klein); }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font: 500 14px/1 var(--font-body);
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav.scrolled .nav-links a:hover { color: var(--klein); }
+    .nav-cta {
+      font: 600 14px/1 var(--font-body);
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 10px 24px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 0;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, border-color 0.2s, color 0.3s, background-color 0.3s;
+    }
+    .nav-cta:hover { background: rgba(255,255,255,0.25); }
+    .nav.scrolled .nav-cta {
+      background: var(--klein);
+      color: #fff;
+      border-color: var(--klein);
+    }
+    .nav.scrolled .nav-cta:hover { background: var(--klein-light); }
+
+    /* Mobile nav toggle */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--fg);
+      margin: 5px 0;
+      transition: 0.3s;
+    }
+
+    /* Sections */
+    section {
+      padding: var(--section-pad) 0;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      position: relative;
+      background: var(--klein);
+      color: #fff;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,0.04) 0px,
+          rgba(255,255,255,0.04) 1px,
+          transparent 1px,
+          transparent calc(100% / 16)
+        );
+      pointer-events: none;
+    }
+    .hero-grid-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: var(--gutter);
+      padding: 0 var(--margin);
+      pointer-events: none;
+    }
+    .hero-grid-overlay div {
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+    .hero-content {
+      grid-column: 1 / 14;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 0 80px;
+    }
+    .hero-eyebrow {
+      margin-bottom: 32px;
+      color: rgba(255,255,255,0.7);
+    }
+    .hero-title {
+      margin-bottom: 40px;
+      max-width: 900px;
+    }
+    .hero-title .accent {
+      color: #fff;
+      position: relative;
+    }
+    .hero-title .accent::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.4);
+    }
+    .hero-subtitle {
+      max-width: 520px;
+      margin-bottom: 48px;
+      color: rgba(255,255,255,0.85);
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .btn-primary {
+      font: 600 16px/1 var(--font-body);
+      background: #fff;
+      color: var(--klein);
+      padding: 16px 36px;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover {
+      background: rgba(255,255,255,0.9);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      font: 600 16px/1 var(--font-body);
+      background: transparent;
+      color: #fff;
+      padding: 16px 36px;
+      border: 2px solid rgba(255,255,255,0.4);
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover {
+      border-color: #fff;
+      color: #fff;
+    }
+    .hero-side-block {
+      grid-column: 14 / 17;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 140px 0 80px;
+      border-left: 1px solid rgba(255,255,255,0.15);
+    }
+    .hero-stat-row {
+      padding: 24px 0;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .hero-stat-number {
+      font: 800 clamp(32px, 3vw, 48px)/0.95 var(--font-display);
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+    .hero-stat-label {
+      font: 500 14px/1.3 var(--font-body);
+      color: rgba(255,255,255,0.6);
+      margin-top: 6px;
+      max-width: 200px;
+    }
+    .hero-corner-mark {
+      position: absolute;
+      top: 120px;
+      right: var(--margin);
+      z-index: 2;
+      font: 700 120px/0.85 var(--font-display);
+      color: rgba(255,255,255,0.06);
+      letter-spacing: -0.04em;
+      user-select: none;
+    }
+
+    /* Section headers */
+    .section-header {
+      grid-column: 1 / 17;
+      margin-bottom: 64px;
+    }
+    .section-header .label {
+      margin-bottom: 16px;
+      display: block;
+    }
+    .section-header .display-md {
+      margin-bottom: 20px;
+    }
+    .section-header .body-lg {
+      max-width: 640px;
+    }
+
+    /* Divider */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* Who We Are */
+    .about-grid {
+      grid-column: 1 / 17;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+    .about-text .body-lg {
+      margin-bottom: 32px;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .about-stat-number {
+      font: 800 clamp(40px, 5vw, 64px)/0.9 var(--font-display);
+      letter-spacing: -0.03em;
+      color: var(--klein);
+    }
+    .about-stat-label {
+      font: 500 16px/1.3 var(--font-body);
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* Projects */
+    .projects-grid {
+      grid-column: 1 / 17;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .project-card:hover {
+      border-color: var(--klein);
+      transform: translateY(-2px);
+    }
+    .project-card-accent {
+      height: 4px;
+      background: var(--klein);
+    }
+    .project-card-body {
+      padding: 32px;
+    }
+    .project-card-label {
+      font: 600 12px/1 var(--font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .project-card-title {
+      font: 700 24px/1.2 var(--font-display);
+      letter-spacing: -0.015em;
+      margin-bottom: 12px;
+    }
+    .project-card-desc {
+      font: 400 15px/1.55 var(--font-body);
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .project-card-link {
+      font: 600 14px/1 var(--font-body);
+      color: var(--klein);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap 0.2s;
+    }
+    .project-card-link:hover { gap: 12px; }
+    .project-card-link svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Capabilities */
+    .capabilities-grid {
+      grid-column: 1 / 17;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .capability-card {
+      padding: 32px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color 0.2s;
+    }
+    .capability-card:hover { border-color: var(--klein); }
+    .capability-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 20px;
+      color: var(--klein);
+    }
+    .capability-title {
+      font: 600 18px/1.2 var(--font-display);
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    .capability-desc {
+      font: 400 14px/1.55 var(--font-body);
+      color: var(--muted);
+    }
+
+    /* Contact */
+    .contact-grid {
+      grid-column: 1 / 17;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+    .contact-info .body-lg {
+      margin-bottom: 40px;
+    }
+    .contact-detail {
+      margin-bottom: 24px;
+    }
+    .contact-detail-label {
+      font: 600 12px/1 var(--font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .contact-detail-value {
+      font: 400 18px/1.4 var(--font-body);
+      color: var(--fg);
+    }
+    .contact-detail-value a {
+      color: var(--klein);
+      text-decoration: none;
+    }
+    .contact-detail-value a:hover { text-decoration: underline; }
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-label {
+      font: 600 13px/1 var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .form-input,
+    .form-textarea {
+      font: 400 16px/1.5 var(--font-body);
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--fg);
+      outline: none;
+      transition: border-color 0.2s;
+      border-radius: 0;
+    }
+    .form-input:focus,
+    .form-textarea:focus { border-color: var(--klein); }
+    .form-textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+    .form-submit {
+      font: 600 16px/1 var(--font-body);
+      background: var(--klein);
+      color: #fff;
+      padding: 16px 36px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      align-self: flex-start;
+    }
+    .form-submit:hover { background: var(--klein-light); }
+    .form-status {
+      font: 500 14px/1 var(--font-body);
+      padding: 12px 16px;
+      display: none;
+    }
+    .form-status.success {
+      display: block;
+      background: var(--klein-pale);
+      color: var(--klein);
+      border-left: 3px solid var(--klein);
+    }
+
+    /* Footer */
+    .footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      grid-column: 1 / 17;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy {
+      font: 400 14px/1 var(--font-body);
+      color: var(--muted);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      font: 400 14px/1 var(--font-body);
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--klein); }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero-content { grid-column: 1 / 15; }
+      .projects-grid { grid-template-columns: repeat(2, 1fr); }
+      .capabilities-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-toggle { display: block; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--klein);
+        padding: 24px var(--margin);
+        gap: 20px;
+      }
+      .nav-links.open a { color: rgba(255,255,255,0.85); }
+      .hero-content { grid-column: 1 / 17; }
+      .hero-side-block { display: none; }
+      .hero-grid-overlay { display: none; }
+      .hero-corner-mark { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .capabilities-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .about-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">CODE<span>STONE</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about">Who We Are</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#capabilities">Capabilities</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="nav-cta">Start a Project</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-grid-overlay">
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="hero-corner-mark">CS</div>
+    <div class="grid">
+      <div class="hero-content">
+        <p class="label hero-eyebrow">Sports Software Development</p>
+        <h1 class="display-xl hero-title">We build the<br>software behind<br><span class="accent">great sport.</span></h1>
+        <p class="body-lg hero-subtitle">Code Stone develops performance analytics platforms, fan engagement systems, and team management tools for leagues, clubs, and fitness brands.</p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn-primary">See Our Work</a>
+          <a href="#contact" class="btn-secondary">Get in Touch</a>
+        </div>
+      </div>
+      <div class="hero-side-block">
+        <div class="hero-stat-row">
+          <div class="hero-stat-number">47</div>
+          <div class="hero-stat-label">Products shipped</div>
+        </div>
+        <div class="hero-stat-row">
+          <div class="hero-stat-number">12</div>
+          <div class="hero-stat-label">Countries</div>
+        </div>
+        <div class="hero-stat-row">
+          <div class="hero-stat-number">3.2M</div>
+          <div class="hero-stat-label">End users</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Who We Are -->
+  <section id="about">
+    <div class="grid">
+      <div class="section-header">
+        <span class="label">Who We Are</span>
+        <h2 class="display-md">Engineers who understand<br>the game</h2>
+        <p class="body-lg">We're a team of software engineers, data scientists, and sports technologists. We've shipped products used by professional leagues, national federations, and consumer fitness platforms across three continents.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p class="body-lg">Founded in 2019, Code Stone was born from a simple observation: the sports industry runs on legacy systems and spreadsheets. Athletes generate terabytes of performance data. Fans expect real-time digital experiences. Clubs need tools that work on game day, not just in demos.</p>
+          <p class="body-lg">We bridge that gap. Every product we build is grounded in how sport actually works — training cycles, match-day operations, fan behavior, and the business models that sustain teams and organizations.</p>
+        </div>
+        <div class="about-stats">
+          <div>
+            <div class="about-stat-number">47</div>
+            <div class="about-stat-label">Products shipped for sports organizations</div>
+          </div>
+          <div>
+            <div class="about-stat-number">12</div>
+            <div class="about-stat-label">Countries with active deployments</div>
+          </div>
+          <div>
+            <div class="about-stat-number">3.2M</div>
+            <div class="about-stat-label">End users across all platforms</div>
+          </div>
+          <div>
+            <div class="about-stat-number">99.8%</div>
+            <div class="about-stat-label">Average uptime on production systems</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="grid">
+      <div class="section-header">
+        <span class="label">Selected Projects</span>
+        <h2 class="display-md">What we've built</h2>
+        <p class="body-lg">Real products for real sports organizations. Each one designed around how the end user actually works.</p>
+      </div>
+      <div class="projects-grid">
+        <article class="project-card">
+          <div class="project-card-accent"></div>
+          <div class="project-card-body">
+            <p class="project-card-label">Performance Analytics</p>
+            <h3 class="project-card-title">ProLeague Insights Platform</h3>
+            <p class="project-card-desc">Real-time match analytics and post-game reporting for a 24-team professional league. Processes 1.2M tracking events per match.</p>
+            <a href="#" class="project-card-link">
+              View case study
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-accent"></div>
+          <div class="project-card-body">
+            <p class="project-card-label">Fan Engagement</p>
+            <h3 class="project-card-title">Stadium Connect</h3>
+            <p class="project-card-desc">In-stadium mobile app for 65,000-seat venues. Live stats, replay angles, concessions ordering, and wayfinding — all offline-capable.</p>
+            <a href="#" class="project-card-link">
+              View case study
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-accent"></div>
+          <div class="project-card-body">
+            <p class="project-card-label">Team Management</p>
+            <h3 class="project-card-title">TrainingOS</h3>
+            <p class="project-card-desc">End-to-end training management for elite athletic programs. Load monitoring, injury risk scoring, periodization planning, and coach dashboards.</p>
+            <a href="#" class="project-card-link">
+              View case study
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-accent"></div>
+          <div class="project-card-body">
+            <p class="project-card-label">Fitness Platform</p>
+            <h3 class="project-card-title">Pulse Network</h3>
+            <p class="project-card-desc">Consumer fitness platform connecting 400+ independent gyms. Class booking, progress tracking, social challenges, and trainer marketplace.</p>
+            <a href="#" class="project-card-link">
+              View case study
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-accent"></div>
+          <div class="project-card-body">
+            <p class="project-card-label">Broadcast Tech</p>
+            <h3 class="project-card-title">LiveGraph Engine</h3>
+            <p class="project-card-desc">Automated graphics generation for live sports broadcast. Real-time stat overlays, player comparisons, and predictive win-probability models.</p>
+            <a href="#" class="project-card-link">
+              View case study
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-accent"></div>
+          <div class="project-card-body">
+            <p class="project-card-label">Youth Development</p>
+            <h3 class="project-card-title">Academy Tracker</h3>
+            <p class="project-card-desc">Youth athlete development platform for national federations. Long-term athlete development tracking, scouting reports, and milestone assessments.</p>
+            <a href="#" class="project-card-link">
+              View case study
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Capabilities -->
+  <section id="capabilities">
+    <div class="grid">
+      <div class="section-header">
+        <span class="label">Capabilities</span>
+        <h2 class="display-md">What we do</h2>
+        <p class="body-lg">Full-stack development, data engineering, and product design — specialized for the sports domain.</p>
+      </div>
+      <div class="capabilities-grid">
+        <div class="capability-card">
+          <svg class="capability-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="4" y="4" width="32" height="32" rx="0"/>
+            <path d="M12 20h16M20 12v16"/>
+          </svg>
+          <h3 class="capability-title">Platform Development</h3>
+          <p class="capability-desc">Web and mobile applications built for scale. Real-time data, offline support, and multi-tenant architectures.</p>
+        </div>
+        <div class="capability-card">
+          <svg class="capability-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="20" cy="20" r="16"/>
+            <path d="M12 28l6-8 4 4 6-10"/>
+          </svg>
+          <h3 class="capability-title">Data & Analytics</h3>
+          <p class="capability-desc">Tracking data pipelines, performance models, and visualization dashboards that coaches and analysts actually use.</p>
+        </div>
+        <div class="capability-card">
+          <svg class="capability-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="6" y="8" width="28" height="24" rx="0"/>
+            <path d="M6 16h28"/>
+            <circle cx="14" cy="24" r="3"/>
+            <path d="M22 22h8M22 26h5"/>
+          </svg>
+          <h3 class="capability-title">Product Design</h3>
+          <p class="capability-desc">UX research, interaction design, and design systems for sports products where every second counts.</p>
+        </div>
+        <div class="capability-card">
+          <svg class="capability-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 32V12l12-4 12 4v20"/>
+            <path d="M8 32h24"/>
+            <path d="M16 32V22h8v10"/>
+          </svg>
+          <h3 class="capability-title">Infrastructure</h3>
+          <p class="capability-desc">Cloud architecture, CI/CD, monitoring, and game-day reliability engineering for mission-critical systems.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="grid">
+      <div class="section-header">
+        <span class="label">Contact</span>
+        <h2 class="display-md">Let's build something</h2>
+        <p class="body-lg">Tell us about your project. We respond within 48 hours.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <p class="body-lg">Whether you're a league looking to modernize your data infrastructure, a club that needs better tools, or a fitness brand building a digital product — we'd love to hear what you're working on.</p>
+          <div class="contact-detail">
+            <p class="contact-detail-label">Email</p>
+            <p class="contact-detail-value"><a href="mailto:hello@codestone.dev">hello@codestone.dev</a></p>
+          </div>
+          <div class="contact-detail">
+            <p class="contact-detail-label">Phone</p>
+            <p class="contact-detail-value">+1 (555) 234-5678</p>
+          </div>
+          <div class="contact-detail">
+            <p class="contact-detail-label">Office</p>
+            <p class="contact-detail-value">Austin, TX</p>
+          </div>
+        </div>
+        <form class="contact-form" id="contact-form">
+          <div class="form-group">
+            <label class="form-label" for="name">Name</label>
+            <input class="form-input" type="text" id="name" name="name" required placeholder="Your name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" name="email" required placeholder="you@company.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="org">Organization</label>
+            <input class="form-input" type="text" id="org" name="org" placeholder="Club, league, or company" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="message">Project Details</label>
+            <textarea class="form-textarea" id="message" name="message" required placeholder="Tell us about the problem you're trying to solve..."></textarea>
+          </div>
+          <button type="submit" class="form-submit">Send Message</button>
+          <div class="form-status" id="form-status">Message sent — we'll be in touch within 48 hours.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="grid">
+      <div class="footer-inner">
+        <p class="footer-copy">&copy; 2026 Code Stone. All rights reserved.</p>
+        <ul class="footer-links">
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll behavior
+    (function() {
+      var nav = document.querySelector('.nav');
+      var hero = document.querySelector('.hero');
+      function updateNav() {
+        if (!nav || !hero) return;
+        var heroBottom = hero.getBoundingClientRect().bottom;
+        if (heroBottom <= 80) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+      window.addEventListener('scroll', updateNav, { passive: true });
+      updateNav();
+    })();
+
+    // Mobile nav toggle
+    (function() {
+      var toggle = document.getElementById('nav-toggle');
+      var links = document.getElementById('nav-links');
+      if (toggle && links) {
+        toggle.addEventListener('click', function() {
+          var isOpen = links.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        links.querySelectorAll('a').forEach(function(a) {
+          a.addEventListener('click', function() {
+            links.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+    })();
+
+    // Contact form
+    (function() {
+      var form = document.getElementById('contact-form');
+      var status = document.getElementById('form-status');
+      if (form && status) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          status.classList.add('success');
+          form.reset();
+          setTimeout(function() {
+            status.classList.remove('success');
+          }, 5000);
+        });
+      }
+    })();
+
+    // Smooth scroll offset for fixed nav
+    (function() {
+      document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            var nav = document.querySelector('.nav');
+            var offset = nav ? nav.offsetHeight + 20 : 80;
+            var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

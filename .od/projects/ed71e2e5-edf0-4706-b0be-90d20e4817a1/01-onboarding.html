@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Versatile — Onboarding</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .onboarding-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 20%, rgba(201, 122, 90, 0.15), transparent 60%);
+      pointer-events: none;
+    }
+    .onboarding-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .onboarding-tag {
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--fg-secondary);
+    }
+    .weight-display {
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .weight-display .accent {
+      color: var(--accent-secondary);
+    }
+    .weight-unit {
+      font-size: 20px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .weight-subtitle {
+      font-size: 13px;
+      color: var(--accent-secondary);
+      margin-bottom: 24px;
+    }
+    .weight-bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 60px;
+      margin-bottom: 32px;
+    }
+    .weight-bar {
+      flex: 1;
+      background: var(--border);
+      border-radius: 4px;
+      min-height: 8px;
+    }
+    .weight-bar.active {
+      background: var(--accent-secondary);
+    }
+    .routine-list {
+      margin-bottom: 24px;
+    }
+    .routine-day {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .routine-day-label {
+      font-size: 13px;
+      color: var(--muted);
+      width: 40px;
+    }
+    .routine-day-name {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .routine-day-name.rest {
+      color: var(--muted);
+      font-style: italic;
+    }
+    .routine-day-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-secondary);
+    }
+    .routine-day-dot.blue {
+      background: var(--accent);
+    }
+    .routine-day-dot.muted {
+      background: var(--border);
+    }
+    .privacy-list {
+      margin-bottom: 24px;
+    }
+    .privacy-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      font-size: 14px;
+      color: var(--fg-secondary);
+    }
+    .privacy-item .check {
+      color: var(--success);
+    }
+    .privacy-item .cross {
+      color: var(--muted);
+    }
+    .name-input-wrapper {
+      margin-bottom: 24px;
+    }
+    .name-input-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .name-input {
+      width: 100%;
+      padding: 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      color: var(--fg);
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .name-input-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .slide-indicator {
+      position: absolute;
+      bottom: 100px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="iphone-frame">
+    <div class="status-bar">
+      <span class="time">9:41</span>
+      <span class="icons">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="20" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="21" y="4" width="2" height="4" rx="1"/><rect x="2" y="3" width="14" height="6" rx="1" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <div class="screen-content" id="onboarding-content">
+      <!-- Slide 1: Welcome -->
+      <div class="onboarding-screen" id="slide-1">
+        <div class="onboarding-bg"></div>
+        <div class="onboarding-header">
+          <span class="onboarding-step">01 / 05</span>
+          <a href="#" class="onboarding-skip">Omitir</a>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+          <div class="onboarding-eyebrow">Versatile · Bienvenido</div>
+          <div class="onboarding-title">
+            <div class="display-lg">Tu gym,<br><span class="text-accent-secondary text-italic">en bruto.</span></div>
+          </div>
+          <p class="onboarding-body body-md">Registro rápido, privado y hecho para ti. Sin cuentas. Sin nube. Solo tus pesas.</p>
+          <div class="onboarding-tags">
+            <span class="onboarding-tag">Pesos & PRs</span>
+            <span class="onboarding-tag">Rutinas</span>
+            <span class="onboarding-tag">100% local</span>
+          </div>
+        </div>
+        <div class="onboarding-cta">
+          <button class="btn btn-primary btn-full" onclick="goSlide(2)">Empezar →</button>
+        </div>
+        <div class="slide-indicator">
+          <div class="onboarding-dot active"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Record -->
+      <div class="onboarding-screen" id="slide-2" style="display:none;">
+        <div class="onboarding-bg"></div>
+        <div class="onboarding-header">
+          <span class="onboarding-step">02 / 05</span>
+          <a href="#" class="onboarding-skip">Omitir</a>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+          <div class="onboarding-eyebrow">Registra · Récord</div>
+          <div class="weight-display">
+            <span class="accent">+46</span><span class="weight-unit">kg</span>
+          </div>
+          <div class="weight-subtitle">EN 11 SEM.</div>
+          <div class="onboarding-title">
+            <div class="display-md">Pesa lo que<br><span class="text-accent-secondary text-italic">levantas.</span></div>
+          </div>
+          <p class="onboarding-body body-md">Cada serie, cada repetición. Mira tu 1RM estimado subir semana a semana.</p>
+          <div class="weight-bar-chart">
+            <div class="weight-bar" style="height:20%"></div>
+            <div class="weight-bar" style="height:25%"></div>
+            <div class="weight-bar" style="height:30%"></div>
+            <div class="weight-bar" style="height:35%"></div>
+            <div class="weight-bar" style="height:40%"></div>
+            <div class="weight-bar" style="height:45%"></div>
+            <div class="weight-bar" style="height:50%"></div>
+            <div class="weight-bar" style="height:55%"></div>
+            <div class="weight-bar" style="height:60%"></div>
+            <div class="weight-bar active" style="height:75%"></div>
+            <div class="weight-bar active" style="height:85%"></div>
+            <div class="weight-bar active" style="height:100%"></div>
+          </div>
+        </div>
+        <div class="onboarding-cta">
+          <button class="btn btn-primary btn-full" onclick="goSlide(3)">Continuar →</button>
+        </div>
+        <div class="slide-indicator">
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot active"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Routines -->
+      <div class="onboarding-screen" id="slide-3" style="display:none;">
+        <div class="onboarding-bg"></div>
+        <div class="onboarding-header">
+          <span class="onboarding-step">03 / 05</span>
+          <a href="#" class="onboarding-skip">Omitir</a>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+          <div class="onboarding-eyebrow">Rutinas · Tu plan</div>
+          <div class="routine-list">
+            <div class="routine-day">
+              <span class="routine-day-label">LUN</span>
+              <span class="routine-day-name">Upper</span>
+              <span class="routine-day-dot"></span>
+            </div>
+            <div class="routine-day">
+              <span class="routine-day-label">MAR</span>
+              <span class="routine-day-name">Lower</span>
+              <span class="routine-day-dot blue"></span>
+            </div>
+            <div class="routine-day">
+              <span class="routine-day-label">MIÉ</span>
+              <span class="routine-day-name rest">Descanso</span>
+              <span class="routine-day-dot muted"></span>
+            </div>
+            <div class="routine-day">
+              <span class="routine-day-label">JUE</span>
+              <span class="routine-day-name">Pull</span>
+              <span class="routine-day-dot"></span>
+            </div>
+            <div class="routine-day">
+              <span class="routine-day-label">VIE</span>
+              <span class="routine-day-name">Push</span>
+              <span class="routine-day-dot"></span>
+            </div>
+          </div>
+          <div class="onboarding-title">
+            <div class="display-md">La semana, <span class="text-accent-secondary text-italic">a tu medida.</span></div>
+          </div>
+          <p class="onboarding-body body-md">Crea rutinas, ordena ejercicios y deja descansos donde toque.</p>
+        </div>
+        <div class="onboarding-cta">
+          <button class="btn btn-primary btn-full" onclick="goSlide(4)">Continuar →</button>
+        </div>
+        <div class="slide-indicator">
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot active"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Privacy -->
+      <div class="onboarding-screen" id="slide-4" style="display:none;">
+        <div class="onboarding-bg"></div>
+        <div class="onboarding-header">
+          <span class="onboarding-step">04 / 05</span>
+          <a href="#" class="onboarding-skip">Omitir</a>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+          <div class="onboarding-eyebrow">Privado · 100% local</div>
+          <div class="onboarding-title">
+            <div class="display-lg">Tu data,<br><span style="color: var(--success);" class="text-italic">se queda aquí.</span></div>
+          </div>
+          <div class="privacy-list">
+            <div class="privacy-item"><span class="cross">✕</span> Cuentas y suscripciones</div>
+            <div class="privacy-item"><span class="cross"></span> Sincronización a la nube</div>
+            <div class="privacy-item"><span class="cross">✕</span> Anuncios y rastreo</div>
+            <div class="privacy-item"><span class="check">✓</span> Todo en tu teléfono</div>
+          </div>
+        </div>
+        <div class="onboarding-cta">
+          <button class="btn btn-primary btn-full" onclick="goSlide(5)">Casi listo →</button>
+        </div>
+        <div class="slide-indicator">
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot active"></div>
+          <div class="onboarding-dot"></div>
+        </div>
+      </div>
+
+      <!-- Slide 5: Name -->
+      <div class="onboarding-screen" id="slide-5" style="display:none;">
+        <div class="onboarding-bg"></div>
+        <div class="onboarding-header">
+          <span class="onboarding-step">05 / 05</span>
+          <a href="#" class="onboarding-skip">Omitir</a>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+          <div class="onboarding-eyebrow">Lo último · ¿Quién entrena?</div>
+          <div class="onboarding-title">
+            <div class="display-lg">Hola,<br><span class="text-accent-secondary text-italic">¿cómo te llamas?</span></div>
+          </div>
+          <p class="onboarding-body body-sm" style="margin-bottom:24px;">Opcional. Puedes saltarlo o cambiarlo cuando quieras.</p>
+          <div class="name-input-wrapper">
+            <div class="name-input-label">Tu nombre</div>
+            <input class="name-input" type="text" value="María" placeholder="Tu nombre">
+            <div class="name-input-hint">Se guarda solo en este dispositivo</div>
+          </div>
+        </div>
+        <div class="onboarding-cta">
+          <button class="btn btn-primary btn-full" onclick="window.location.href='02-home.html'">¡Vamos! ✓</button>
+        </div>
+        <div class="slide-indicator">
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot active"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-indicator"></div>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 5;
+    const STORE_KEY = 'versatile:onboarding:slide';
+
+    function goSlide(n) {
+      document.getElementById('slide-' + currentSlide).style.display = 'none';
+      currentSlide = Math.max(1, Math.min(totalSlides, n));
+      document.getElementById('slide-' + currentSlide).style.display = 'flex';
+      try { localStorage.setItem(STORE_KEY, currentSlide); } catch(e) {}
+    }
+
+    // Restore position
+    try {
+      const saved = parseInt(localStorage.getItem(STORE_KEY) || '1', 10);
+      if (saved >= 1 && saved <= totalSlides) {
+        document.getElementById('slide-1').style.display = 'none';
+        currentSlide = saved;
+        document.getElementById('slide-' + currentSlide).style.display = 'flex';
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>

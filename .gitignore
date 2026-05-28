@@ -14,7 +14,9 @@ out/
 # Local runtime data — auto-created by the daemon on first start.
 # Holds app.sqlite (project metadata), projects/<id>/ (per-project artifacts,
 # the agent's CWD), and artifacts/ (one-off renders). Never commit.
-.od
+.od/*
+!.od/projects
+!.od/projects/**
 .od-e2e
 test-results
 playwright-report

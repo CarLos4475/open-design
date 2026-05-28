@@ -1,0 +1,652 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sistema de Cifrado Matricial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       oklch(14% 0.015 260);
+      --surface:  oklch(18% 0.018 260);
+      --surface2: oklch(22% 0.02 260);
+      --fg:       oklch(95% 0.005 260);
+      --muted:    oklch(55% 0.02 260);
+      --border:   oklch(28% 0.02 260);
+      --accent:   oklch(65% 0.20 245);
+      --accent2:  oklch(72% 0.18 145);
+      --danger:   oklch(60% 0.22 25);
+      --warning:  oklch(75% 0.16 85);
+      --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono:    'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+      --radius-sm:  6px;
+      --radius-md:  10px;
+      --radius-lg:  14px;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.35);
+      --shadow-lg:  0 8px 30px rgba(0,0,0,0.4);
+      --glow-accent: 0 0 20px oklch(65% 0.20 245 / 0.3);
+      --glow-green:  0 0 16px oklch(72% 0.18 145 / 0.35);
+      --ease: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font: 14px/1.6 var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .app { max-width: 1440px; margin: 0 auto; padding: 24px 32px 48px; }
+    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .header-icon { width: 44px; height: 44px; flex-shrink: 0; }
+    .header h1 { font: 700 22px/1.2 var(--font-display); letter-spacing: -0.02em; }
+    .header p { font: 400 13px/1.5 var(--font-body); color: var(--muted); margin-top: 2px; }
+    .main { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); transition: box-shadow 0.3s var(--ease); }
+    .panel:hover { box-shadow: var(--shadow-md); }
+    .panel-title { font: 600 13px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 16px; }
+    .tabs { display: flex; gap: 4px; background: var(--bg); border-radius: var(--radius-md); padding: 4px; margin-bottom: 20px; }
+    .tab { flex: 1; padding: 10px 16px; border: none; background: transparent; color: var(--muted); font: 500 13px/1 var(--font-display); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s var(--ease); }
+    .tab:hover { color: var(--fg); }
+    .tab.active { background: var(--accent); color: #fff; box-shadow: var(--glow-accent); }
+    .textarea-wrap { margin-bottom: 20px; }
+    textarea { width: 100%; min-height: 120px; padding: 14px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--fg); font: 14px/1.6 var(--font-mono); resize: vertical; outline: none; transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+    textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px oklch(65% 0.20 245 / 0.15); }
+    textarea::placeholder { color: var(--muted); }
+    .char-count { font: 400 11px/1 var(--font-mono); color: var(--muted); text-align: right; margin-top: 6px; }
+    .size-selector { display: flex; gap: 8px; margin-bottom: 20px; }
+    .size-btn { padding: 8px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--muted); font: 500 13px/1 var(--font-mono); cursor: pointer; transition: all 0.2s var(--ease); }
+    .size-btn:hover { border-color: var(--accent); color: var(--fg); }
+    .size-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .matrix-grid { display: inline-grid; gap: 6px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); position: relative; }
+    .matrix-grid::before, .matrix-grid::after { content: ''; position: absolute; top: 8px; bottom: 8px; width: 2px; background: var(--muted); border-radius: 1px; }
+    .matrix-grid::before { left: 6px; }
+    .matrix-grid::after { right: 6px; }
+    .matrix-cell { width: 52px; height: 40px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg); font: 500 14px/1 var(--font-mono); outline: none; transition: all 0.2s var(--ease); }
+    .matrix-cell:focus { border-color: var(--accent); box-shadow: 0 0 0 2px oklch(65% 0.20 245 / 0.15); }
+    .matrix-cell.valid { border-color: var(--accent2); }
+    .matrix-cell.invalid { border-color: var(--danger); }
+    .matrix-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font: 500 12px/1 var(--font-mono); transition: all 0.3s var(--ease); }
+    .badge.pass { background: oklch(72% 0.18 145 / 0.12); color: var(--accent2); border: 1px solid oklch(72% 0.18 145 / 0.25); }
+    .badge.fail { background: oklch(60% 0.22 25 / 0.12); color: var(--danger); border: 1px solid oklch(60% 0.22 25 / 0.25); }
+    .badge.warn { background: oklch(75% 0.16 85 / 0.12); color: var(--warning); border: 1px solid oklch(75% 0.16 85 / 0.25); }
+    .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .badge.pass .dot { box-shadow: var(--glow-green); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .btn { padding: 10px 20px; border: none; border-radius: var(--radius-md); font: 600 13px/1 var(--font-display); cursor: pointer; transition: all 0.2s var(--ease); display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { box-shadow: var(--glow-accent), var(--shadow-md); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary { background: var(--surface2); color: var(--fg); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--muted); }
+    .btn-ghost { background: transparent; color: var(--muted); padding: 10px 12px; }
+    .btn-ghost:hover { color: var(--fg); }
+    .btn svg { width: 16px; height: 16px; }
+    .math-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .math-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; transition: all 0.2s var(--ease); }
+    .math-card:hover { border-color: var(--accent); }
+    .math-card-label { font: 500 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .math-card-label svg { width: 14px; height: 14px; opacity: 0.6; }
+    .math-card-value { font: 500 15px/1.4 var(--font-mono); color: var(--fg); }
+    .math-card-formula { font: 400 11px/1.4 var(--font-mono); color: var(--muted); margin-top: 4px; }
+    .math-card-wide { grid-column: 1 / -1; }
+    .pipeline { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 0; margin-bottom: 24px; flex-wrap: wrap; }
+    .pipeline-step { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); font: 500 11px/1 var(--font-mono); color: var(--muted); transition: all 0.3s var(--ease); min-width: 80px; }
+    .pipeline-step.active { border-color: var(--accent); color: var(--accent); box-shadow: var(--glow-accent); }
+    .pipeline-step.done { border-color: var(--accent2); color: var(--accent2); }
+    .pipeline-step .step-label { font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; }
+    .pipeline-arrow { color: var(--muted); transition: color 0.3s var(--ease); }
+    .pipeline-arrow.active { color: var(--accent); }
+    .result-panel { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; min-height: 100px; position: relative; }
+    .result-panel.has-result { border-color: var(--accent2); box-shadow: var(--glow-green); }
+    .result-label { font: 500 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
+    .result-text { font: 500 16px/1.5 var(--font-mono); color: var(--accent2); word-break: break-all; min-height: 24px; }
+    .result-text.placeholder { color: var(--muted); }
+    .result-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .history-toggle { position: fixed; right: 24px; bottom: 24px; width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); color: var(--muted); cursor: pointer; display: grid; place-items: center; box-shadow: var(--shadow-md); transition: all 0.2s var(--ease); z-index: 100; }
+    .history-toggle:hover { color: var(--fg); border-color: var(--accent); }
+    .history-toggle svg { width: 20px; height: 20px; }
+    .history-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 340px; background: var(--surface); border-left: 1px solid var(--border); box-shadow: var(--shadow-lg); transform: translateX(100%); transition: transform 0.3s var(--ease); z-index: 200; display: flex; flex-direction: column; }
+    .history-panel.open { transform: translateX(0); }
+    .history-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .history-header h3 { font: 600 14px/1 var(--font-display); }
+    .history-close { background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; }
+    .history-close:hover { color: var(--fg); }
+    .history-list { flex: 1; overflow-y: auto; padding: 16px 24px; }
+    .history-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .history-item:last-child { border-bottom: none; }
+    .history-item-type { font: 600 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 4px; }
+    .history-item-type.decrypt { color: var(--accent2); }
+    .history-item-text { font: 400 12px/1.4 var(--font-mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .history-item-time { font: 400 10px/1 var(--font-mono); color: var(--muted); margin-top: 4px; opacity: 0.6; }
+    .history-empty { text-align: center; color: var(--muted); font: 400 13px/1.5 var(--font-body); padding: 40px 0; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 300; display: none; place-items: center; }
+    .modal-overlay.open { display: grid; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; max-width: 560px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+    .modal h2 { font: 700 18px/1.2 var(--font-display); margin-bottom: 16px; }
+    .modal p { font: 400 14px/1.7 var(--font-body); color: var(--muted); margin-bottom: 12px; }
+    .modal code { font: 500 13px/1 var(--font-mono); background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--accent); }
+    .modal-close { margin-top: 20px; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 20px; font: 500 13px/1 var(--font-display); color: var(--fg); box-shadow: var(--shadow-lg); z-index: 400; opacity: 0; transition: all 0.3s var(--ease); pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .loading-dots { display: inline-flex; gap: 4px; }
+    .loading-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: dotPulse 1.2s ease-in-out infinite; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1.1); } }
+    @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } .math-cards { grid-template-columns: 1fr; } .app { padding: 16px 20px 40px; } }
+    @media (max-width: 640px) { .header { flex-direction: column; align-items: flex-start; gap: 10px; } .actions { flex-direction: column; } .btn { justify-content: center; } .pipeline { flex-direction: column; } .pipeline-arrow { transform: rotate(90deg); } .size-selector { flex-wrap: wrap; } .badges { flex-direction: column; } .matrix-cell { width: 44px; height: 36px; font-size: 12px; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <svg class="header-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="40" height="40" rx="10" stroke="oklch(65% 0.20 245)" stroke-width="2"/>
+        <line x1="14" y1="14" x2="30" y2="14" stroke="oklch(65% 0.20 245)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="14" y1="22" x2="30" y2="22" stroke="oklch(72% 0.18 145)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="14" y1="30" x2="30" y2="30" stroke="oklch(65% 0.20 245)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="14" cy="14" r="2" fill="oklch(65% 0.20 245)"/>
+        <circle cx="22" cy="14" r="2" fill="oklch(65% 0.20 245)"/>
+        <circle cx="30" cy="14" r="2" fill="oklch(65% 0.20 245)"/>
+        <circle cx="14" cy="22" r="2" fill="oklch(72% 0.18 145)"/>
+        <circle cx="22" cy="22" r="2" fill="oklch(72% 0.18 145)"/>
+        <circle cx="30" cy="22" r="2" fill="oklch(72% 0.18 145)"/>
+        <circle cx="14" cy="30" r="2" fill="oklch(65% 0.20 245)"/>
+        <circle cx="22" cy="30" r="2" fill="oklch(65% 0.20 245)"/>
+        <circle cx="30" cy="30" r="2" fill="oklch(65% 0.20 245)"/>
+      </svg>
+      <div>
+        <h1>Sistema de Cifrado Matricial</h1>
+        <p>Transformaciones lineales ortogonales y aritmética modular</p>
+      </div>
+    </header>
+    <div class="main">
+      <div class="col-left">
+        <div class="panel">
+          <div class="panel-title">Operación</div>
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-op="encrypt" role="tab" aria-selected="true">Cifrar</button>
+            <button class="tab" data-op="decrypt" role="tab" aria-selected="false">Descifrar</button>
+          </div>
+          <div class="textarea-wrap">
+            <textarea id="message" placeholder="Ingrese el mensaje…" maxlength="500"></textarea>
+            <div class="char-count"><span id="charCount">0</span> / 500</div>
+          </div>
+          <div class="panel-title" style="margin-top:8px;">Tamaño de matriz</div>
+          <div class="size-selector">
+            <button class="size-btn" data-size="2">2 × 2</button>
+            <button class="size-btn active" data-size="3">3 × 3</button>
+            <button class="size-btn" data-size="4">4 × 4</button>
+          </div>
+          <div class="panel-title">Matriz clave</div>
+          <div class="matrix-wrap">
+            <div class="matrix-grid" id="matrixGrid"></div>
+          </div>
+          <div class="badges" id="badges">
+            <span class="badge warn"><span class="dot"></span>Ingrese valores</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" id="btnExecute">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M4 2l10 6-10 6V2z" fill="currentColor"/></svg>
+              Ejecutar operación
+            </button>
+            <button class="btn btn-secondary" id="btnClear">Limpiar</button>
+            <button class="btn btn-secondary" id="btnRandom">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M2 4h3l2-2 2 2h5M2 8h3l2-2 2 2h5M2 12h3l2-2 2 2h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Matriz aleatoria
+            </button>
+            <button class="btn btn-ghost" id="btnHelp">
+              <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 6.5a1.5 1.5 0 013 0c0 .75-.75 1-1.25 1.5M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Ayuda
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="panel">
+          <div class="panel-title">Información matemática</div>
+          <div class="math-cards" id="mathCards">
+            <div class="math-card">
+              <div class="math-card-label">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3 13L8 3l5 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Determinante
+              </div>
+              <div class="math-card-value" id="detValue">—</div>
+              <div class="math-card-formula">det(A) = Σ(−1)^(i+j) · aᵢⱼ · Mᵢⱼ</div>
+            </div>
+            <div class="math-card">
+              <div class="math-card-label">
+                <svg viewBox="0 0 16 16" fill="none"><rect x="3" y="3" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+                Matriz adjunta
+              </div>
+              <div class="math-card-value" id="adjValue">—</div>
+              <div class="math-card-formula">adj(A) = Cᵀ</div>
+            </div>
+            <div class="math-card">
+              <div class="math-card-label">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M4 12l4-8 4 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="1.5"/></svg>
+                Matriz inversa
+              </div>
+              <div class="math-card-value" id="invValue">—</div>
+              <div class="math-card-formula">A⁻¹ = adj(A) / det(A)</div>
+            </div>
+            <div class="math-card">
+              <div class="math-card-label">
+                <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Verificación ortogonal
+              </div>
+              <div class="math-card-value" id="orthValue">—</div>
+              <div class="math-card-formula">Aᵀ · A = I</div>
+            </div>
+            <div class="math-card math-card-wide">
+              <div class="math-card-label">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M8 2v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Módulo
+              </div>
+              <div class="math-card-value" id="modValue">mod 26</div>
+              <div class="math-card-formula">C = (K · P) mod 26</div>
+            </div>
+          </div>
+          <div class="panel-title">Proceso de transformación</div>
+          <div class="pipeline" id="pipeline">
+            <div class="pipeline-step" data-step="text"><span class="step-label">Texto</span></div>
+            <svg class="pipeline-arrow" width="20" height="12" viewBox="0 0 20 12" fill="none"><path d="M1 6h16M13 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="pipeline-step" data-step="vector"><span class="step-label">Vector</span></div>
+            <svg class="pipeline-arrow" width="20" height="12" viewBox="0 0 20 12" fill="none"><path d="M1 6h16M13 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="pipeline-step" data-step="multiply"><span class="step-label">Mult. matricial</span></div>
+            <svg class="pipeline-arrow" width="20" height="12" viewBox="0 0 20 12" fill="none"><path d="M1 6h16M13 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="pipeline-step" data-step="modulo"><span class="step-label">Módulo</span></div>
+            <svg class="pipeline-arrow" width="20" height="12" viewBox="0 0 20 12" fill="none"><path d="M1 6h16M13 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="pipeline-step" data-step="result"><span class="step-label">Resultado</span></div>
+          </div>
+          <div class="panel-title">Resultado</div>
+          <div class="result-panel" id="resultPanel">
+            <div class="result-label">Texto de salida</div>
+            <div class="result-text placeholder" id="resultText">El resultado aparecerá aquí…</div>
+            <div class="result-actions" id="resultActions" style="display:none;">
+              <button class="btn btn-secondary" id="btnCopy">
+                <svg viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3a2 2 0 00-2-2H3a2 2 0 00-2 2v6a2 2 0 002 2h2" stroke="currentColor" stroke-width="1.5"/></svg>
+                Copiar
+              </button>
+              <button class="btn btn-secondary" id="btnDownload">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2v8M4 8l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Descargar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="history-toggle" id="historyToggle" aria-label="Historial">
+    <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 5v5l3.5 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
+  <div class="history-panel" id="historyPanel">
+    <div class="history-header">
+      <h3>Historial</h3>
+      <button class="history-close" id="historyClose" aria-label="Cerrar">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty">Sin operaciones aún</div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="helpModal">
+    <div class="modal">
+      <h2>Cómo funciona el cifrado matricial</h2>
+      <p>El cifrado de Hill utiliza <strong>transformaciones lineales</strong> sobre vectores de texto. Cada letra se mapea a un número (A=0, B=1, …, Z=25), se agrupa en vectores de tamaño <code>n</code>, y se multiplica por una <strong>matriz clave</strong> <code>K</code> de <code>n×n</code>.</p>
+      <p><strong>Cifrado:</strong> <code>C = (K · P) mod 26</code></p>
+      <p><strong>Descifrado:</strong> <code>P = (K⁻¹ · C) mod 26</code></p>
+      <p>Para que la matriz sea válida debe ser <strong>invertible</strong>, es decir, su determinante debe ser coprimo con 26 (no divisible por 2 ni por 13).</p>
+      <p>Una matriz es <strong>ortogonal</strong> si <code>Aᵀ · A = I</code>, lo que significa que su inversa es igual a su transpuesta. Esto simplifica el descifrado pero no es requerido para el cifrado de Hill.</p>
+      <button class="btn btn-primary modal-close" id="helpClose">Entendido</button>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    (function() {
+      'use strict';
+      const MODULUS = 26;
+      let matrixSize = 3;
+      let operation = 'encrypt';
+      let history = [];
+      const messageEl = document.getElementById('message');
+      const charCountEl = document.getElementById('charCount');
+      const matrixGrid = document.getElementById('matrixGrid');
+      const badgesEl = document.getElementById('badges');
+      const btnExecute = document.getElementById('btnExecute');
+      const btnClear = document.getElementById('btnClear');
+      const btnRandom = document.getElementById('btnRandom');
+      const btnHelp = document.getElementById('btnHelp');
+      const helpModal = document.getElementById('helpModal');
+      const helpClose = document.getElementById('helpClose');
+      const resultText = document.getElementById('resultText');
+      const resultPanel = document.getElementById('resultPanel');
+      const resultActions = document.getElementById('resultActions');
+      const btnCopy = document.getElementById('btnCopy');
+      const btnDownload = document.getElementById('btnDownload');
+      const historyToggle = document.getElementById('historyToggle');
+      const historyPanel = document.getElementById('historyPanel');
+      const historyClose = document.getElementById('historyClose');
+      const historyList = document.getElementById('historyList');
+      const toastEl = document.getElementById('toast');
+      const detValue = document.getElementById('detValue');
+      const adjValue = document.getElementById('adjValue');
+      const invValue = document.getElementById('invValue');
+      const orthValue = document.getElementById('orthValue');
+      const modValue = document.getElementById('modValue');
+      function buildMatrixGrid(size) {
+        matrixGrid.innerHTML = '';
+        matrixGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+        for (let i = 0; i < size * size; i++) {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.inputMode = 'numeric';
+          input.className = 'matrix-cell';
+          input.dataset.index = i;
+          input.value = '';
+          input.maxLength = 3;
+          input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9-]/g, '');
+            validateMatrix();
+          });
+          input.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              const next = matrixGrid.querySelector(`[data-index="${(parseInt(this.dataset.index) + 1) % (size * size)}"]`);
+              if (next) next.focus();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              const prev = matrixGrid.querySelector(`[data-index="${((parseInt(this.dataset.index) - 1) + size * size) % (size * size)}"]`);
+              if (prev) prev.focus();
+            }
+          });
+          matrixGrid.appendChild(input);
+        }
+      }
+      function getMatrix() {
+        const cells = matrixGrid.querySelectorAll('.matrix-cell');
+        const mat = [];
+        for (let i = 0; i < matrixSize; i++) {
+          mat[i] = [];
+          for (let j = 0; j < matrixSize; j++) {
+            const val = parseInt(cells[i * matrixSize + j].value) || 0;
+            mat[i][j] = val;
+          }
+        }
+        return mat;
+      }
+      function det2(m) { return m[0][0] * m[1][1] - m[0][1] * m[1][0]; }
+      function det3(m) {
+        return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+             - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+             + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+      }
+      function det4(m) {
+        let d = 0;
+        for (let j = 0; j < 4; j++) {
+          const sub = [];
+          for (let i = 1; i < 4; i++) {
+            const row = [];
+            for (let k = 0; k < 4; k++) {
+              if (k !== j) row.push(m[i][k]);
+            }
+            sub.push(row);
+          }
+          d += (j % 2 === 0 ? 1 : -1) * m[0][j] * det3(sub);
+        }
+        return d;
+      }
+      function determinant(m) {
+        const n = m.length;
+        if (n === 2) return det2(m);
+        if (n === 3) return det3(m);
+        if (n === 4) return det4(m);
+        return 0;
+      }
+      function adjugate2(m) { return [[m[1][1], -m[0][1]], [-m[1][0], m[0][0]]]; }
+      function adjugate3(m) {
+        const cof = [];
+        for (let i = 0; i < 3; i++) {
+          cof[i] = [];
+          for (let j = 0; j < 3; j++) {
+            const sub = [];
+            for (let r = 0; r < 3; r++) {
+              if (r === i) continue;
+              const row = [];
+              for (let c = 0; c < 3; c++) {
+                if (c === j) continue;
+                row.push(m[r][c]);
+              }
+              sub.push(row);
+            }
+            cof[i][j] = ((i + j) % 2 === 0 ? 1 : -1) * det2(sub);
+          }
+        }
+        const adj = [];
+        for (let i = 0; i < 3; i++) { adj[i] = []; for (let j = 0; j < 3; j++) { adj[i][j] = cof[j][i]; } }
+        return adj;
+      }
+      function adjugate4(m) {
+        const cof = [];
+        for (let i = 0; i < 4; i++) {
+          cof[i] = [];
+          for (let j = 0; j < 4; j++) {
+            const sub = [];
+            for (let r = 0; r < 4; r++) {
+              if (r === i) continue;
+              const row = [];
+              for (let c = 0; c < 4; c++) {
+                if (c === j) continue;
+                row.push(m[r][c]);
+              }
+              sub.push(row);
+            }
+            cof[i][j] = ((i + j) % 2 === 0 ? 1 : -1) * det3(sub);
+          }
+        }
+        const adj = [];
+        for (let i = 0; i < 4; i++) { adj[i] = []; for (let j = 0; j < 4; j++) { adj[i][j] = cof[j][i]; } }
+        return adj;
+      }
+      function adjugate(m) { const n = m.length; if (n === 2) return adjugate2(m); if (n === 3) return adjugate3(m); if (n === 4) return adjugate4(m); return []; }
+      function transpose(m) { const n = m.length; const t = []; for (let i = 0; i < n; i++) { t[i] = []; for (let j = 0; j < n; j++) { t[i][j] = m[j][i]; } } return t; }
+      function multiply(a, b) { const n = a.length; const c = []; for (let i = 0; i < n; i++) { c[i] = []; for (let j = 0; j < n; j++) { let sum = 0; for (let k = 0; k < n; k++) { sum += a[i][k] * b[k][j]; } c[i][j] = sum; } } return c; }
+      function modMat(m, mod) { return m.map(row => row.map(v => ((v % mod) + mod) % mod)); }
+      function isIdentity(m) { const n = m.length; for (let i = 0; i < n; i++) { for (let j = 0; j < n; j++) { if (Math.round(m[i][j]) !== (i === j ? 1 : 0)) return false; } } return true; }
+      function isCoprimeWith26(det) { const d = Math.abs(det); return d % 2 !== 0 && d % 13 !== 0; }
+      function inverseMatrix(m) { const det = determinant(m); if (det === 0) return null; const adj = adjugate(m); const n = m.length; const inv = []; for (let i = 0; i < n; i++) { inv[i] = []; for (let j = 0; j < n; j++) { inv[i][j] = adj[i][j] / det; } } return inv; }
+      function formatMatrix(m) { return m.map(row => row.map(v => Number.isInteger(v) ? v : v.toFixed(3)).join('  ')).join('\n'); }
+      function validateMatrix() {
+        const m = getMatrix();
+        const det = determinant(m);
+        const invertible = det !== 0 && isCoprimeWith26(det);
+        const adj = adjugate(m);
+        const tt = transpose(m);
+        const product = multiply(tt, m);
+        const orthogonal = isIdentity(product);
+        let badges = '';
+        if (det === 0) { badges += '<span class="badge fail"><span class="dot"></span>Det = 0</span>'; }
+        else { badges += '<span class="badge pass"><span class="dot"></span>Det = ' + det + '</span>'; }
+        if (invertible) { badges += '<span class="badge pass"><span class="dot"></span>Invertible (mod 26)</span>'; }
+        else if (det !== 0) { badges += '<span class="badge fail"><span class="dot"></span>No invertible mod 26</span>'; }
+        if (orthogonal) { badges += '<span class="badge pass"><span class="dot"></span>Ortogonal</span>'; }
+        else if (det !== 0) { badges += '<span class="badge warn"><span class="dot"></span>No ortogonal</span>'; }
+        badgesEl.innerHTML = badges;
+        detValue.textContent = det;
+        adjValue.textContent = formatMatrix(adj);
+        const inv = inverseMatrix(m);
+        invValue.textContent = inv ? formatMatrix(inv) : 'No existe';
+        orthValue.textContent = orthogonal ? 'Sí (AᵀA = I)' : 'No';
+        const cells = matrixGrid.querySelectorAll('.matrix-cell');
+        cells.forEach(c => { c.classList.remove('valid', 'invalid'); if (c.value && det === 0) c.classList.add('invalid'); else if (c.value) c.classList.add('valid'); });
+      }
+      function textToNumbers(text) { return text.toUpperCase().split('').map(c => { const code = c.charCodeAt(0) - 65; return (code >= 0 && code < 26) ? code : -1; }).filter(n => n >= 0); }
+      function numbersToText(nums) { return nums.map(n => String.fromCharCode(((n % 26) + 26) % 26 + 65)).join(''); }
+      function encrypt(message, key) {
+        const nums = textToNumbers(message);
+        while (nums.length % matrixSize !== 0) nums.push(25);
+        const result = [];
+        for (let i = 0; i < nums.length; i += matrixSize) {
+          const vec = [];
+          for (let j = 0; j < matrixSize; j++) vec.push([nums[i + j]]);
+          const product = multiply(key, vec);
+          for (let j = 0; j < matrixSize; j++) result.push(((product[j][0] % MODULUS) + MODULUS) % MODULUS);
+        }
+        return numbersToText(result);
+      }
+      function decrypt(cipherText, key) {
+        const inv = inverseMatrix(key);
+        if (!inv) return null;
+        const nums = textToNumbers(cipherText);
+        while (nums.length % matrixSize !== 0) nums.push(0);
+        const result = [];
+        for (let i = 0; i < nums.length; i += matrixSize) {
+          const vec = [];
+          for (let j = 0; j < matrixSize; j++) vec.push([nums[i + j]]);
+          const product = multiply(inv, vec);
+          for (let j = 0; j < matrixSize; j++) result.push(Math.round(((product[j][0] % MODULUS) + MODULUS) % MODULUS));
+        }
+        return numbersToText(result);
+      }
+      function animatePipeline(callback) {
+        const steps = ['text', 'vector', 'multiply', 'modulo', 'result'];
+        let i = 0;
+        function next() {
+          if (i > 0) {
+            const prev = document.querySelector(`.pipeline-step[data-step="${steps[i-1]}"]`);
+            if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+            const arrows = document.querySelectorAll('.pipeline-arrow');
+            if (arrows[i-1]) arrows[i-1].classList.remove('active');
+          }
+          if (i < steps.length) {
+            const step = document.querySelector(`.pipeline-step[data-step="${steps[i]}"]`);
+            if (step) step.classList.add('active');
+            if (i > 0) { const arrows = document.querySelectorAll('.pipeline-arrow'); if (arrows[i-1]) arrows[i-1].classList.add('active'); }
+            i++;
+            setTimeout(next, 400);
+          } else {
+            setTimeout(() => {
+              steps.forEach(s => { const el = document.querySelector(`.pipeline-step[data-step="${s}"]`); if (el) { el.classList.remove('active', 'done'); } });
+              document.querySelectorAll('.pipeline-arrow').forEach(a => a.classList.remove('active'));
+              callback();
+            }, 500);
+          }
+        }
+        next();
+      }
+      function execute() {
+        const message = messageEl.value.trim();
+        if (!message) { showToast('Ingrese un mensaje'); return; }
+        const key = getMatrix();
+        const det = determinant(key);
+        if (det === 0) { showToast('La matriz no es invertible'); return; }
+        if (!isCoprimeWith26(det)) { showToast('El determinante debe ser coprimo con 26'); return; }
+        btnExecute.disabled = true;
+        btnExecute.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span> Procesando…';
+        animatePipeline(function() {
+          let result;
+          if (operation === 'encrypt') { result = encrypt(message, key); }
+          else { result = decrypt(message, key); }
+          if (result) {
+            resultText.textContent = result;
+            resultText.classList.remove('placeholder');
+            resultPanel.classList.add('has-result');
+            resultActions.style.display = 'flex';
+            addHistory(operation, message, result);
+            showToast(operation === 'encrypt' ? 'Cifrado completado' : 'Descifrado completado');
+          } else {
+            resultText.textContent = 'Error: matriz no invertible';
+            resultText.classList.add('placeholder');
+            showToast('No se puede descifrar con esta matriz');
+          }
+          btnExecute.disabled = false;
+          btnExecute.innerHTML = '<svg viewBox="0 0 16 16" fill="none"><path d="M4 2l10 6-10 6V2z" fill="currentColor"/></svg> Ejecutar operación';
+        });
+      }
+      function addHistory(op, input, output) {
+        history.unshift({ op, input: input.substring(0, 40), output: output.substring(0, 40), time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) });
+        if (history.length > 50) history.pop();
+        renderHistory();
+      }
+      function renderHistory() {
+        if (history.length === 0) { historyList.innerHTML = '<div class="history-empty">Sin operaciones aún</div>'; return; }
+        historyList.innerHTML = history.map(h => `<div class="history-item"><div class="history-item-type ${h.op === 'decrypt' ? 'decrypt' : ''}">${h.op === 'encrypt' ? 'Cifrado' : 'Descifrado'}</div><div class="history-item-text">${h.input} → ${h.output}</div><div class="history-item-time">${h.time}</div></div>`).join('');
+      }
+      function showToast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); setTimeout(() => toastEl.classList.remove('show'), 2500); }
+      function randomMatrix() {
+        const cells = matrixGrid.querySelectorAll('.matrix-cell');
+        if (matrixSize === 2) { cells[0].value = 3; cells[1].value = 5; cells[2].value = 1; cells[3].value = 2; }
+        else if (matrixSize === 3) { cells[0].value = 3; cells[1].value = 2; cells[2].value = 1; cells[3].value = 1; cells[4].value = 1; cells[5].value = 2; cells[6].value = 2; cells[7].value = 1; cells[8].value = 1; }
+        else { cells[0].value = 2; cells[1].value = 1; cells[2].value = 0; cells[3].value = 0; cells[4].value = 1; cells[5].value = 2; cells[6].value = 1; cells[7].value = 0; cells[8].value = 0; cells[9].value = 1; cells[10].value = 2; cells[11].value = 1; cells[12].value = 0; cells[13].value = 0; cells[14].value = 1; cells[15].value = 2; }
+        validateMatrix();
+        showToast('Matriz generada');
+      }
+      messageEl.addEventListener('input', function() { charCountEl.textContent = this.value.length; });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+          this.classList.add('active');
+          this.setAttribute('aria-selected', 'true');
+          operation = this.dataset.op;
+        });
+      });
+      document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          matrixSize = parseInt(this.dataset.size);
+          buildMatrixGrid(matrixSize);
+          validateMatrix();
+        });
+      });
+      btnExecute.addEventListener('click', execute);
+      btnClear.addEventListener('click', function() {
+        messageEl.value = '';
+        charCountEl.textContent = '0';
+        resultText.textContent = 'El resultado aparecerá aquí…';
+        resultText.classList.add('placeholder');
+        resultPanel.classList.remove('has-result');
+        resultActions.style.display = 'none';
+        const cells = matrixGrid.querySelectorAll('.matrix-cell');
+        cells.forEach(c => { c.value = ''; c.classList.remove('valid', 'invalid'); });
+        detValue.textContent = '—';
+        adjValue.textContent = '—';
+        invValue.textContent = '—';
+        orthValue.textContent = '—';
+        badgesEl.innerHTML = '<span class="badge warn"><span class="dot"></span>Ingrese valores</span>';
+      });
+      btnRandom.addEventListener('click', randomMatrix);
+      btnHelp.addEventListener('click', function() { helpModal.classList.add('open'); });
+      helpClose.addEventListener('click', function() { helpModal.classList.remove('open'); });
+      helpModal.addEventListener('click', function(e) { if (e.target === helpModal) helpModal.classList.remove('open'); });
+      btnCopy.addEventListener('click', function() { navigator.clipboard.writeText(resultText.textContent).then(() => showToast('Copiado al portapapeles')); });
+      btnDownload.addEventListener('click', function() {
+        const blob = new Blob([resultText.textContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `resultado-${operation}-${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Archivo descargado');
+      });
+      historyToggle.addEventListener('click', function() { historyPanel.classList.add('open'); });
+      historyClose.addEventListener('click', function() { historyPanel.classList.remove('open'); });
+      buildMatrixGrid(matrixSize);
+      modValue.textContent = 'mod ' + MODULUS;
+    })();
+  </script>
+</body>
+</html>

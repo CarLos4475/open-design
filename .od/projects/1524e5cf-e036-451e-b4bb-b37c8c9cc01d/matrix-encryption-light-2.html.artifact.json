@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Sistema de Cifrado Matricial — Apple Light Glass",
+  "entry": "matrix-encryption-light-2.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-05-19T21:26:06.022Z",
+  "updatedAt": "2026-05-19T21:26:06.028Z",
+  "metadata": {
+    "identifier": "matrix-encryption-light",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

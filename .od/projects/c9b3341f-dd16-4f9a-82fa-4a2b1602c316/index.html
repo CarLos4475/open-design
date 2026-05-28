@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fit — Fitness App Android Prototype</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      padding: 48px 24px;
+    }
+
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 48px;
+    }
+    .header .label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      max-width: 600px;
+    }
+    .header p {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 480px;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .screen-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 32px;
+    }
+
+    .screen-card {
+      display: flex;
+      flex-direction: column;
+    }
+    .screen-card .frame {
+      border: 6px solid var(--fg);
+      border-top: 6px solid var(--fg);
+      border-radius: 28px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 2px 0 0 var(--border);
+      position: relative;
+    }
+    .screen-card .frame::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: var(--fg);
+      opacity: 0.08;
+      border-radius: 2px;
+      z-index: 10;
+    }
+    .screen-card .frame iframe {
+      width: 100%;
+      height: 720px;
+      border: none;
+      display: block;
+    }
+    .screen-card .frame .pixel-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 8px;
+      background: var(--fg);
+      border-radius: 0 0 8px 8px;
+      z-index: 10;
+    }
+    .screen-card .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 12px;
+      padding: 0 4px;
+    }
+    .screen-card .meta .name {
+      font-family: var(--font-display);
+      font-size: 18px;
+    }
+    .screen-card .meta .count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer {
+      max-width: 1200px;
+      margin: 64px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer .note {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+    .footer .tone {
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="label">Android App · Prototype</div>
+    <h1>Fit — Editorial Fitness</h1>
+    <p>Comprehensive training, nutrition, and progress tracking. All five screens below are linked via bottom navigation — open one to browse the full prototype.</p>
+  </div>
+
+  <div class="screen-grid">
+    <div class="screen-card">
+      <div class="frame">
+        <div class="pixel-notch"></div>
+        <iframe src="screens/home.html" title="Home" loading="lazy"></iframe>
+      </div>
+      <div class="meta">
+        <span class="name">Home Dashboard</span>
+        <span class="count">Screen 01</span>
+      </div>
+    </div>
+
+    <div class="screen-card">
+      <div class="frame">
+        <div class="pixel-notch"></div>
+        <iframe src="screens/workout.html" title="Workouts" loading="lazy"></iframe>
+      </div>
+      <div class="meta">
+        <span class="name">Workout Tracker</span>
+        <span class="count">Screen 02</span>
+      </div>
+    </div>
+
+    <div class="screen-card">
+      <div class="frame">
+        <div class="pixel-notch"></div>
+        <iframe src="screens/progress.html" title="Progress" loading="lazy"></iframe>
+      </div>
+      <div class="meta">
+        <span class="name">Progress Analytics</span>
+        <span class="count">Screen 03</span>
+      </div>
+    </div>
+
+    <div class="screen-card">
+      <div class="frame">
+        <div class="pixel-notch"></div>
+        <iframe src="screens/nutrition.html" title="Nutrition" loading="lazy"></iframe>
+      </div>
+      <div class="meta">
+        <span class="name">Nutrition Log</span>
+        <span class="count">Screen 04</span>
+      </div>
+    </div>
+
+    <div class="screen-card">
+      <div class="frame">
+        <div class="pixel-notch"></div>
+        <iframe src="screens/profile.html" title="Profile" loading="lazy"></iframe>
+      </div>
+      <div class="meta">
+        <span class="name">Profile & Social</span>
+        <span class="count">Screen 05</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="note">Fit for Android</span>
+    <span class="tone">Editorial / Monocle · 5 screens</span>
+  </div>
+</body>
+</html>

@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Portfolio — Win95 Retro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Tahoma:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --desktop:    #008080;
+      --gray:       #c0c0c0;
+      --gray-light: #dfdfdf;
+      --gray-dark:  #808080;
+      --black:      #000000;
+      --white:      #ffffff;
+      --title-active:    #000080;
+      --title-active2:   #1084d0;
+      --title-text:      #ffffff;
+      --title-inactive:  #808080;
+      --title-inactive2: #b4b4b4;
+      --highlight: #000080;
+      --font-ui: 'Tahoma', 'MS Sans Serif', 'Microsoft Sans Serif', Geneva, sans-serif;
+      --font-pixel: 'Press Start 2P', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--desktop);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--black);
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: unset;
+      image-rendering: pixelated;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .phone-frame {
+      width: 100%;
+      max-width: 412px;
+      height: 100vh;
+      max-height: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: var(--desktop);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .statusbar {
+      flex: 0 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      background: var(--gray);
+      border-bottom: 2px solid var(--white);
+      font-size: 11px;
+      font-family: var(--font-ui);
+      color: var(--black);
+      box-shadow: inset 0 -1px 0 var(--gray-dark);
+    }
+    .statusbar-left { display: flex; align-items: center; gap: 6px; }
+    .statusbar-left .pixel-icon {
+      display: inline-block;
+      width: 14px; height: 14px;
+      background: var(--gray);
+      border: 1px solid var(--black);
+      font-size: 8px;
+      text-align: center;
+      line-height: 14px;
+    }
+    .statusbar-right { display: flex; align-items: center; gap: 4px; font-size: 10px; }
+    .statusbar-right .time { border: 0; padding: 2px 6px; background: none; }
+
+    .desktop {
+      flex: 1 1 auto;
+      position: relative;
+      background: var(--desktop);
+      overflow: hidden;
+    }
+    .desktop-icons {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 12px;
+      height: 100%;
+      align-content: flex-start;
+    }
+    .desktop-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 72px;
+      padding: 6px 4px;
+      cursor: pointer;
+      text-align: center;
+      color: var(--white);
+      font-size: 11px;
+      font-family: var(--font-ui);
+      line-height: 1.2;
+      border: 1px solid transparent;
+    }
+    .desktop-icon:hover, .desktop-icon:focus-visible {
+      background: rgba(0,0,128,0.3);
+      border: 1px dotted var(--white);
+      outline: none;
+    }
+    .desktop-icon.active {
+      background: rgba(0,0,128,0.5);
+      border: 1px dotted var(--white);
+    }
+    .desktop-icon .ico {
+      width: 32px; height: 32px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--gray-dark) var(--gray-dark) var(--white);
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      margin-bottom: 4px;
+      box-shadow: none;
+      image-rendering: pixelated;
+    }
+    .desktop-icon .ico.folder { background: #ffff00; color: var(--black); }
+    .desktop-icon .ico.txt { background: var(--white); color: var(--black); }
+    .desktop-icon .ico.info { background: #000080; color: var(--white); }
+
+    .window {
+      position: absolute;
+      top: 40px;
+      left: 20px;
+      min-width: 280px;
+      max-width: calc(100% - 8px);
+      max-height: calc(100% - 48px);
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+      box-shadow: 1px 1px 0 var(--black);
+      display: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+    .window.active { display: flex; flex-direction: column; }
+    .window.topmost { z-index: 200; }
+    .window-title {
+      flex: 0 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px 0 6px;
+      background: linear-gradient(90deg, var(--title-active), var(--title-active2));
+      color: var(--title-text);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: default;
+    }
+    .window.inactive .window-title {
+      background: linear-gradient(90deg, var(--title-inactive), var(--title-inactive2));
+    }
+    .window-title-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .window-title-btns { display: flex; gap: 2px; }
+    .win-btn {
+      width: 18px; height: 18px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      color: var(--black);
+    }
+    .win-btn:active {
+      border-color: var(--black) var(--white) var(--white) var(--black);
+    }
+    .win-btn.close { font-size: 11px; }
+
+    .window-body {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 8px;
+      font-size: 12px;
+      font-family: var(--font-ui);
+      background: var(--gray);
+      min-height: 80px;
+    }
+    .window-body::-webkit-scrollbar {
+      width: 14px;
+      background: var(--gray);
+      border-left: 1px solid var(--gray-dark);
+    }
+    .window-body::-webkit-scrollbar-thumb {
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+    }
+    .window-body::-webkit-scrollbar-button {
+      display: block;
+      height: 14px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+    }
+
+    .win-inset {
+      border: 2px solid;
+      border-color: var(--gray-dark) var(--white) var(--white) var(--gray-dark);
+      padding: 8px;
+      background: var(--white);
+    }
+
+    .win-label {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .hero-win h1 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .hero-win .subtitle {
+      font-size: 11px;
+      color: var(--gray-dark);
+      margin-bottom: 8px;
+    }
+    .hero-win .bio {
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .project-card {
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+      padding: 8px;
+      margin-bottom: 6px;
+      background: var(--gray);
+      cursor: pointer;
+    }
+    .project-card:active {
+      border-color: var(--black) var(--white) var(--white) var(--black);
+    }
+    .project-card .pcat {
+      font-size: 10px;
+      color: var(--title-active);
+      margin-bottom: 2px;
+    }
+    .project-card .ptitle {
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .project-card .pyear {
+      font-size: 10px;
+      color: var(--gray-dark);
+    }
+
+    .skill-bar-wrap {
+      margin-bottom: 8px;
+    }
+    .skill-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+    .skill-bar-track {
+      height: 16px;
+      border: 2px solid;
+      border-color: var(--gray-dark) var(--white) var(--white) var(--gray-dark);
+      background: var(--white);
+      position: relative;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      background: #000080;
+      position: relative;
+    }
+    .skill-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 4px,
+        rgba(255,255,255,0.15) 4px,
+        rgba(255,255,255,0.15) 6px
+      );
+    }
+
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      border: 2px solid;
+      border-color: var(--gray-dark) var(--white) var(--white) var(--gray-dark);
+      padding: 4px 6px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      background: var(--white);
+      outline: none;
+      margin-bottom: 6px;
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+      border-color: var(--black) var(--gray-dark) var(--gray-dark) var(--black);
+    }
+    .contact-form textarea { resize: vertical; min-height: 60px; }
+    .contact-form button {
+      padding: 4px 16px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+      cursor: pointer;
+    }
+    .contact-form button:active {
+      border-color: var(--black) var(--white) var(--white) var(--black);
+    }
+    #cf-status {
+      font-size: 11px;
+      color: var(--title-active);
+      margin-top: 4px;
+    }
+
+    .about-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .about-row {
+      display: flex;
+      gap: 8px;
+    }
+    .about-row-label {
+      font-weight: 700;
+      min-width: 60px;
+      color: var(--title-active);
+    }
+
+    .tab-bar {
+      flex: 0 0 auto;
+      height: 32px;
+      display: flex;
+      background: var(--gray);
+      border-top: 2px solid var(--white);
+      padding: 2px 4px;
+      gap: 2px;
+      overflow-x: auto;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex: 1 0 auto;
+      min-width: 48px;
+      height: 26px;
+      padding: 0 8px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+    .tab-btn:active {
+      border-color: var(--black) var(--white) var(--white) var(--black);
+    }
+    .tab-btn.active {
+      border-color: var(--black) var(--white) var(--white) var(--black);
+      background: #dfdfdf;
+    }
+    .tab-btn .ico-sm {
+      width: 14px; height: 14px;
+      border: 1px solid var(--gray-dark);
+      display: inline-grid;
+      place-items: center;
+      font-size: 8px;
+      background: var(--white);
+    }
+    .clock-bar {
+      flex: 0 0 auto;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      background: var(--gray);
+      border-top: 2px solid var(--white);
+      box-shadow: inset 0 1px 0 var(--gray-dark);
+      font-size: 10px;
+      font-family: var(--font-ui);
+    }
+    .clock-bar-left { display: flex; align-items: center; gap: 4px; }
+    .clock-bar-right { display: flex; align-items: center; gap: 4px; }
+    .start-btn {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+      cursor: pointer;
+    }
+    .start-btn:active {
+      border-color: var(--black) var(--white) var(--white) var(--black);
+    }
+    .start-btn .flag {
+      font-size: 14px;
+    }
+    .start-menu {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 180px;
+      background: var(--gray);
+      border: 2px solid;
+      border-color: var(--white) var(--black) var(--black) var(--white);
+      box-shadow: 2px -2px 0 rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      font-family: var(--font-ui);
+    }
+    .start-menu.open { display: block; }
+    .start-menu-header {
+      background: linear-gradient(90deg, var(--title-active), var(--title-active2));
+      color: var(--white);
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .start-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .start-menu-item:hover { background: var(--highlight); color: var(--white); }
+    .start-menu-item .sico {
+      width: 16px; height: 16px;
+      border: 1px solid var(--gray-dark);
+      display: grid;
+      place-items: center;
+      background: var(--white);
+      font-size: 9px;
+    }
+    .start-menu-divider {
+      height: 1px;
+      background: var(--gray-dark);
+      margin: 2px 4px;
+    }
+
+    .status-text {
+      font-size: 10px;
+      color: var(--gray-dark);
+      padding: 0 4px;
+    }
+
+    @media (max-width: 430px) {
+      .window { left: 4px; top: 20px; min-width: unset; width: calc(100% - 8px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="statusbar">
+      <div class="statusbar-left">
+        <span class="pixel-icon">☺</span>
+        <span>Portfolio</span>
+      </div>
+      <div class="statusbar-right">
+        <span class="time" id="clock-display">12:00</span>
+      </div>
+    </div>
+
+    <div class="desktop" id="desktop">
+      <div class="desktop-icons" id="desktop-icons">
+        <div class="desktop-icon" data-target="hero" tabindex="0" role="button">
+          <div class="ico info">ℹ</div>
+          <span>About Me</span>
+        </div>
+        <div class="desktop-icon" data-target="work" tabindex="0" role="button">
+          <div class="ico folder">📁</div>
+          <span>Projects</span>
+        </div>
+        <div class="desktop-icon" data-target="skills" tabindex="0" role="button">
+          <div class="ico folder">📁</div>
+          <span>Skills</span>
+        </div>
+        <div class="desktop-icon" data-target="about" tabindex="0" role="button">
+          <div class="ico txt">📄</div>
+          <span>Resume</span>
+        </div>
+        <div class="desktop-icon" data-target="contact" tabindex="0" role="button">
+          <div class="ico folder">📁</div>
+          <span>Contact</span>
+        </div>
+      </div>
+
+      <!-- Window: Hero / About Me -->
+      <div class="window active topmost" data-win="hero" style="top:20px;left:16px;width:320px;">
+        <div class="window-title">
+          <span class="window-title-text">About Me</span>
+          <div class="window-title-btns">
+            <button class="win-btn close" data-close="hero" aria-label="Close">✕</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <div class="hero-win">
+            <h1>Carlos Emi</h1>
+            <div class="subtitle">Designer &amp; Developer</div>
+            <div class="win-inset" style="margin-bottom:8px;">
+              <p style="line-height:1.5;">
+                I craft digital products with a focus on typography, systems thinking, and restrained visual language. Currently building tools for designers at Open Design.
+              </p>
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <span style="background:var(--gray-dark);color:var(--white);padding:2px 6px;font-size:10px;">UI Design</span>
+              <span style="background:var(--gray-dark);color:var(--white);padding:2px 6px;font-size:10px;">Prototyping</span>
+              <span style="background:var(--gray-dark);color:var(--white);padding:2px 6px;font-size:10px;">Design Systems</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Window: Projects -->
+      <div class="window" data-win="work" style="top:50px;left:40px;width:320px;">
+        <div class="window-title">
+          <span class="window-title-text">Projects</span>
+          <div class="window-title-btns">
+            <button class="win-btn close" data-close="work" aria-label="Close">✕</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <div class="project-card">
+            <div class="pcat">Web App</div>
+            <div class="ptitle">Open Design Studio</div>
+            <div class="pyear">2025 — Design tooling platform</div>
+          </div>
+          <div class="project-card">
+            <div class="pcat">Mobile</div>
+            <div class="ptitle">Habitat Tracker</div>
+            <div class="pyear">2024 — Habit tracking app</div>
+          </div>
+          <div class="project-card">
+            <div class="pcat">Brand Identity</div>
+            <div class="ptitle">Meridian Coffee</div>
+            <div class="pyear">2024 — Brand system &amp; packaging</div>
+          </div>
+          <div class="project-card">
+            <div class="pcat">Design System</div>
+            <div class="ptitle">Atlas Components</div>
+            <div class="pyear">2023 — React component library</div>
+          </div>
+          <div class="project-card">
+            <div class="pcat">Editorial</div>
+            <div class="ptitle">Offscreen Magazine</div>
+            <div class="pyear">2023 — Layout &amp; typography</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Window: Skills -->
+      <div class="window" data-win="skills" style="top:80px;left:60px;width:300px;">
+        <div class="window-title">
+          <span class="window-title-text">Skills</span>
+          <div class="window-title-btns">
+            <button class="win-btn close" data-close="skills" aria-label="Close">✕</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>UI / Visual Design</span><span>95%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:95%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>HTML / CSS</span><span>90%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Prototyping</span><span>85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Design Systems</span><span>80%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>JavaScript</span><span>75%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:75%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Motion Design</span><span>70%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Window: Resume -->
+      <div class="window" data-win="about" style="top:110px;left:36px;width:300px;">
+        <div class="window-title">
+          <span class="window-title-text">Resume — Carlos Emi</span>
+          <div class="window-title-btns">
+            <button class="win-btn close" data-close="about" aria-label="Close">✕</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <div class="about-grid">
+            <div class="about-row">
+              <span class="about-row-label">Location</span>
+              <span>Mexico City, MX</span>
+            </div>
+            <div class="about-row">
+              <span class="about-row-label">Role</span>
+              <span>Designer &amp; Developer</span>
+            </div>
+            <div class="about-row">
+              <span class="about-row-label">Exp.</span>
+              <span>8+ years</span>
+            </div>
+            <div class="about-row">
+              <span class="about-row-label">Education</span>
+              <span>BFA Visual Communication</span>
+            </div>
+          </div>
+          <div style="margin-top:8px;padding-top:6px;border-top:2px solid var(--gray-dark);">
+            <div class="win-label">Experience</div>
+            <div style="margin-bottom:4px;">
+              <strong>Open Design</strong> — Sr. Designer<br/>
+              <span style="font-size:10px;color:var(--gray-dark);">2023 – Present</span>
+            </div>
+            <div style="margin-bottom:4px;">
+              <strong>Studio Atlas</strong> — Design Lead<br/>
+              <span style="font-size:10px;color:var(--gray-dark);">2020 – 2023</span>
+            </div>
+            <div>
+              <strong>Freelance</strong> — Designer<br/>
+              <span style="font-size:10px;color:var(--gray-dark);">2017 – 2020</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Window: Contact -->
+      <div class="window" data-win="contact" style="top:60px;left:50px;width:300px;">
+        <div class="window-title">
+          <span class="window-title-text">Contact</span>
+          <div class="window-title-btns">
+            <button class="win-btn close" data-close="contact" aria-label="Close">✕</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <form class="contact-form" id="contact-form">
+            <input type="text" placeholder="Your name" required />
+            <input type="email" placeholder="Your email" required />
+            <textarea placeholder="Message" required></textarea>
+            <button type="submit">Send</button>
+            <div id="cf-status"></div>
+          </form>
+          <div style="margin-top:8px;padding-top:6px;border-top:2px solid var(--gray-dark);">
+            <div class="win-label">Find me</div>
+            <div style="font-size:11px;">
+              <div>📧 hello@carlosemi.com</div>
+              <div>🐦 @carlosemi</div>
+              <div>💼 linkedin.com/in/carlosemi</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Menu -->
+      <div class="start-menu" id="start-menu">
+        <div class="start-menu-header">Portfolio</div>
+        <div class="start-menu-item" data-target="hero">
+          <span class="sico">ℹ</span> About Me
+        </div>
+        <div class="start-menu-item" data-target="work">
+          <span class="sico">📁</span> Projects
+        </div>
+        <div class="start-menu-item" data-target="skills">
+          <span class="sico">📁</span> Skills
+        </div>
+        <div class="start-menu-item" data-target="about">
+          <span class="sico">📄</span> Resume
+        </div>
+        <div class="start-menu-item" data-target="contact">
+          <span class="sico">📁</span> Contact
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item" id="start-shutdown">
+          <span class="sico">⏻</span> Close All
+        </div>
+      </div>
+    </div>
+
+    <div class="clock-bar">
+      <div class="clock-bar-left">
+        <button class="start-btn" id="start-btn">
+          <span class="flag">🪟</span> Start
+        </button>
+        <span class="status-text" id="status-text">Ready</span>
+      </div>
+      <div class="clock-bar-right" id="clock-tray">
+        <span id="clock-full">12:00 PM</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var winZ = 200;
+      var openWindows = new Set();
+      openWindows.add('hero');
+
+      function openWin(id) {
+        var w = document.querySelector('[data-win="' + id + '"]');
+        if (!w) return;
+        w.classList.add('active');
+        bringToFront(id);
+        openWindows.add(id);
+        updateStatus('Opened ' + id);
+        updateDesktopSelection(id);
+      }
+
+      function closeWin(id) {
+        var w = document.querySelector('[data-win="' + id + '"]');
+        if (!w) return;
+        w.classList.remove('active');
+        w.classList.remove('topmost');
+        openWindows.delete(id);
+        updateStatus('Closed ' + id);
+        updateDesktopSelection(null);
+      }
+
+      function bringToFront(id) {
+        var wins = document.querySelectorAll('.window');
+        wins.forEach(function(wi) { wi.classList.remove('topmost'); });
+        var w = document.querySelector('[data-win="' + id + '"]');
+        if (w) {
+          w.classList.add('topmost');
+          w.style.zIndex = ++winZ;
+        }
+      }
+
+      function updateDesktopSelection(id) {
+        document.querySelectorAll('.desktop-icon').forEach(function(el) {
+          el.classList.toggle('active', el.dataset.target === id);
+        });
+      }
+
+      function updateStatus(msg) {
+        var el = document.getElementById('status-text');
+        if (el) el.textContent = msg;
+      }
+
+      // Desktop icons
+      document.querySelectorAll('.desktop-icon').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+          var id = el.dataset.target;
+          var w = document.querySelector('[data-win="' + id + '"]');
+          if (w && w.classList.contains('active')) {
+            bringToFront(id);
+          } else {
+            openWin(id);
+          }
+        });
+        el.addEventListener('dblclick', function() {
+          openWin(el.dataset.target);
+        });
+      });
+
+      // Close buttons
+      document.querySelectorAll('[data-close]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          closeWin(btn.dataset.close);
+        });
+      });
+
+      // Window click to bring to front
+      document.querySelectorAll('.window').forEach(function(w) {
+        w.addEventListener('mousedown', function(e) {
+          var id = w.dataset.win;
+          bringToFront(id);
+        });
+      });
+
+      // Start menu
+      var startBtn = document.getElementById('start-btn');
+      var startMenu = document.getElementById('start-menu');
+      var startShutdown = document.getElementById('start-shutdown');
+
+      startBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        startMenu.classList.toggle('open');
+        updateStatus(startMenu.classList.contains('open') ? 'Start menu' : 'Ready');
+      });
+
+      document.addEventListener('click', function() {
+        startMenu.classList.remove('open');
+      });
+      startMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+
+      // Start menu items
+      startMenu.querySelectorAll('[data-target]').forEach(function(item) {
+        item.addEventListener('click', function() {
+          var id = item.dataset.target;
+          openWin(id);
+          startMenu.classList.remove('open');
+        });
+      });
+
+      startShutdown.addEventListener('click', function() {
+        var ids = Array.from(openWindows);
+        ids.forEach(function(id) {
+          if (id !== 'hero') closeWin(id);
+        });
+        startMenu.classList.remove('open');
+        updateStatus('All windows closed');
+      });
+
+      // Contact form
+      var form = document.getElementById('contact-form');
+      var cfStatus = document.getElementById('cf-status');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          cfStatus.style.display = 'block';
+          cfStatus.textContent = '✓ Message sent (demo)';
+          setTimeout(function() { cfStatus.style.display = 'none'; }, 3000);
+          form.reset();
+        });
+      }
+
+      // Clock
+      function tick() {
+        var now = new Date();
+        var h = now.getHours();
+        var m = String(now.getMinutes()).padStart(2, '0');
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        var timeStr = h + ':' + m;
+        document.getElementById('clock-display').textContent = timeStr;
+        document.getElementById('clock-full').textContent = timeStr + ' ' + ampm;
+      }
+      tick();
+      setInterval(tick, 30000);
+
+      // Close hero double-trigger guard — already open, fine
+
+      console.log('Win95 Portfolio loaded. Open windows:', Array.from(openWindows));
+    })();
+  </script>
+</body>
+</html>

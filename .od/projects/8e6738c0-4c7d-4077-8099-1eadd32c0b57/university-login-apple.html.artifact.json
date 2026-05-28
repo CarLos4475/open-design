@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Universidad — Login (Apple-inspired)",
+  "entry": "university-login-apple.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-05-18T20:02:35.631Z",
+  "updatedAt": "2026-05-18T20:02:35.662Z",
+  "metadata": {
+    "identifier": "university-login-apple",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

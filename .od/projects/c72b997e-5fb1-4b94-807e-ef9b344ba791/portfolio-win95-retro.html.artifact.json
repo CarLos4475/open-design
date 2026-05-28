@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Portfolio — Win95 Retro Android App",
+  "entry": "portfolio-win95-retro.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-05-18T20:36:54.050Z",
+  "updatedAt": "2026-05-18T20:36:54.054Z",
+  "metadata": {
+    "identifier": "portfolio-win95-retro",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}
